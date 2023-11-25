@@ -15,6 +15,8 @@ public class BaseBlockComp : DragUI
 
         SingleBlockImageObject = transform.Find("SingleBlockImage").gameObject;
         SingleBlockImageObject.SetActive(false);
+
+        // Test Edit
     }
 
     // Update is called once per frame
