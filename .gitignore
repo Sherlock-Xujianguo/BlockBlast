@@ -1,9 +1,9 @@
-/BlockBlast/Library/
-/BlockBlast/Temp/
-/BlockBlast/Obj/
-/BlockBlast/Build/
-/BlockBlast/Logs/
-/BlockBlast/.vs/
+BlockBlast/Library/
+BlockBlast/Temp/
+BlockBlast/Obj/
+BlockBlast/Build/
+BlockBlast/Logs/
+BlockBlast/.vs/
 
 *.meta
 *.csproj
@@ -13,5 +13,3 @@
 *.user
 *.pidb
 *.log
-
-sysinfo.txt
