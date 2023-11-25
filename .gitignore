@@ -1,8 +1,9 @@
-[Ll]ibrary/
-[Tt]emp/
-[Oo]bj/
-[Bb]uild/
-[Ll]ogs/
+/BlockBlast/Library/
+/BlockBlast/Temp/
+/BlockBlast/Obj/
+/BlockBlast/Build/
+/BlockBlast/Logs/
+/BlockBlast/.vs/
 
 *.meta
 *.csproj
