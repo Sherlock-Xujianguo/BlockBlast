@@ -1,1 +1,16 @@
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Ll]ogs/
+
 *.meta
+*.csproj
+*.sln
+*.tmp
+*.suo
+*.user
+*.pidb
+*.log
+
+sysinfo.txt
