@@ -11,7 +11,7 @@ public class PuzzleManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        CheckerBoardInstance = transform.Find("CheckerBoardInstance").GetComponent<CheckerBoard>();
+        CheckerBoardInstance = transform.Find("CheckerBoard").GetComponent<CheckerBoard>();
         BlockGeneratorInstance = transform.Find("BlockGenerator").GetComponent<BlockGenerator>();
 
         CheckerBoardInstance.RegisteryPuzzleManager(this);

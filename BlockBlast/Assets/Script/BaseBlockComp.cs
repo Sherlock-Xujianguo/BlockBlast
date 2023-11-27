@@ -38,17 +38,13 @@ public class BaseBlockComp : DragUI
         
     }
 
-    public void OnPointerDown(PointerEventData EventData)
+    public override void OnBasePointerDown(PointerEventData EventData)
     {
-        base.OnPointerDown(EventData);
-
         BlockGeneratorInstance.OnDragBlock(this);
     }
 
-    public void OnPointerUp(PointerEventData EventData)
+    public override void OnBasePointerUp(PointerEventData EventData)
     {
-        base.OnPointerUp(EventData);
-
         BlockGeneratorInstance.OnReleaseBlock(this);
     }
 

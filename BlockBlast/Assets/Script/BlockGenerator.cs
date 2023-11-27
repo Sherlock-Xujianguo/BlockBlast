@@ -82,6 +82,7 @@ public class BlockGenerator : MonoBehaviour
         BlockComp_1.transform.SetParent(transform, false);
         BlockComp_1.transform.position = Pos_1.position;
         BlockComp_1.SetupBlock(blocks);
+        BlockComp_1.RegisteryBlockGenerator(this);
 
         blocks = BlockCompShapeGenerator.GetBlockCompRandom();
         BlockComp_2 = Instantiate(BaseBlockCompClass).GetComponent<BaseBlockComp>();
@@ -89,6 +90,7 @@ public class BlockGenerator : MonoBehaviour
         BlockComp_2.transform.SetParent(transform, false);
         BlockComp_2.transform.position = Pos_2.position;
         BlockComp_2.SetupBlock(blocks);
+        BlockComp_2.RegisteryBlockGenerator(this);
 
         blocks = BlockCompShapeGenerator.GetBlockCompRandom();
         BlockComp_3 = Instantiate(BaseBlockCompClass).GetComponent<BaseBlockComp>();
@@ -96,6 +98,7 @@ public class BlockGenerator : MonoBehaviour
         BlockComp_3.transform.SetParent(transform, false);
         BlockComp_3.transform.position = Pos_3.position;
         BlockComp_3.SetupBlock(blocks);
+        BlockComp_3.RegisteryBlockGenerator(this);
 
 
     }
