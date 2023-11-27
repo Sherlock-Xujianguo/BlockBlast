@@ -2,21 +2,34 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class BaseBlockComp : DragUI
 {
     GameObject SingleBlockImageObject;
-    List<GameObject> BlockObjectList;
+    BlockGenerator BlockGeneratorInstance; 
+
+    float size = 20;
+
+    public void Init()
+    {
+        SingleBlockImageObject = transform.Find("SingleBlockImage").gameObject;
+        SingleBlockImageObject.SetActive(false);
+        RectTransform rectTransform = SingleBlockImageObject.GetComponent<RectTransform>();
+        size = rectTransform.rect.width;
+    }
+
+    public void RegisteryBlockGenerator(BlockGenerator blockGeneratorInstance)
+    {
+        BlockGeneratorInstance = blockGeneratorInstance;
+    }
 
     // Start is called before the first frame update
     public void Start()
     {
         base.Start();
 
-        SingleBlockImageObject = transform.Find("SingleBlockImage").gameObject;
-        SingleBlockImageObject.SetActive(false);
-
-        // Test Edit
+        Init();
     }
 
     // Update is called once per frame
@@ -25,19 +38,37 @@ public class BaseBlockComp : DragUI
         
     }
 
-    public void SetupBlock(short[,] blocks)
+    public void OnPointerDown(PointerEventData EventData)
     {
-        for (int i = 0; i < blocks.GetLength(0); i++)
+        base.OnPointerDown(EventData);
+
+        BlockGeneratorInstance.OnDragBlock(this);
+    }
+
+    public void OnPointerUp(PointerEventData EventData)
+    {
+        base.OnPointerUp(EventData);
+
+        BlockGeneratorInstance.OnReleaseBlock(this);
+    }
+
+    public void SetupBlock(short[][] blocks)
+    {
+        if (SingleBlockImageObject == null)
         {
-            for (int j = 0; j < blocks.GetLength(1); j++)
+            Init();
+        }
+        for (int i = 0; i < blocks.Length; i++)
+        {
+            for (int j = 0; j < blocks.Length; j++)
             {
-                short blockValue = blocks[i, j];
+                short blockValue = blocks[i][j];
                 if (blockValue > 0 ) 
                 {
                     GameObject TempBlock = Instantiate<GameObject>(SingleBlockImageObject);
                     TempBlock.SetActive(true);
-                    TempBlock.transform.localPosition = new Vector3(i*20+i, j*20+j, 0);
-                    BlockObjectList.Add(TempBlock);
+                    TempBlock.transform.SetParent(transform, false);
+                    TempBlock.transform.localPosition = new Vector3(j*size + j, -i*size - i, 0);
                 }
             }
         }
