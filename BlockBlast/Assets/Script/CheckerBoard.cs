@@ -13,6 +13,7 @@ public class CheckerBoard : MonoBehaviour
     short[][] BoardValue = new short[8][] { new short[8], new short[8], new short[8], new short[8], new short[8], new short[8], new short[8], new short[8]};
     Vector3[][] BoardPosition = new Vector3[8][] { new Vector3[8], new Vector3[8], new Vector3[8], new Vector3[8], new Vector3[8], new Vector3[8], new Vector3[8], new Vector3[8] };
     Color BaseColor;
+    Color PlacedColor = new Color(0f, 1.0f, 0f);
 
     // Start is called before the first frame update
     void Start()
@@ -48,6 +49,7 @@ public class CheckerBoard : MonoBehaviour
         __ClearReadyPlaceBlockValue();
 
         int childBlockCount = PuzzleManagerInstance.CurrentDragBlock.transform.childCount;
+        int activeChildBlockCount = 0;
         bool CanRelease = true;
         int CanPlaceCount = 0;
 
@@ -59,7 +61,12 @@ public class CheckerBoard : MonoBehaviour
             }
 
             Transform childBlock = PuzzleManagerInstance.CurrentDragBlock.transform.GetChild(i);
+            if (!childBlock.gameObject.activeSelf)
+            {
+                continue;
+            }
 
+            activeChildBlockCount++;
             for (int j = 0; j < 8; j++)
             {
                 if (!CanRelease)
@@ -91,7 +98,7 @@ public class CheckerBoard : MonoBehaviour
             }
         }
 
-        if (CanPlaceCount == childBlockCount)
+        if (CanPlaceCount == activeChildBlockCount)
         {
             CanPlaceCurrentBlock = true;
         }
@@ -123,6 +130,91 @@ public class CheckerBoard : MonoBehaviour
 
                 BoardValue[i][j] = 0;
                 BoardPosition[i][j] = TempImage.transform.position;
+            }
+        }
+    }
+
+    public void OnReleaseBlock()
+    {
+        if (CanPlaceCurrentBlock == false)
+        {
+            return;
+        }
+
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                if (BoardValue[i][j] == 1)
+                {
+                    GameObject TempBoardImageGo = transform.Find(string.Format("BoardSingleImage_{0}_{1}", i, j)).gameObject;
+                    Image TempBoardImage = TempBoardImageGo.GetComponent<Image>();
+                    TempBoardImage.color = PlacedColor;
+                    BoardValue[i][j] = 2;
+                }
+            }
+        }
+
+        PuzzleManagerInstance.OnPlacedBlock();
+    }
+
+    public void CheckGoal()
+    {
+        List<int> i_GoalIndex = new List<int>();
+        for (int i = 0; i < 8; i++)
+        {
+            bool canGoal = true;
+            for (int j = 0; j < 8; j++)
+            {
+                if (BoardValue[i][j] != 2)
+                {
+                    canGoal = false; 
+                    break;
+                }
+            }
+            if (canGoal)
+            {
+                i_GoalIndex.Add(i);
+            }
+        }
+
+        List<int> j_GoalIndex = new List<int>();
+        for (int j = 0; j < 8; j++)
+        {
+            bool canGoal = true;
+            for (int i = 0; i < 8; i++)
+            {
+                if (BoardValue[i][j] != 2)
+                {
+                    canGoal = false;
+                    break;
+                }
+            }
+            if (canGoal)
+            {
+                j_GoalIndex.Add(j);
+            }
+        }
+
+        foreach (int i in i_GoalIndex)
+        {
+            for (int j = 0; j < 8 ; j++)
+            {
+                GameObject TempBoardImageGo = transform.Find(string.Format("BoardSingleImage_{0}_{1}", i, j)).gameObject;
+                Image TempBoardImage = TempBoardImageGo.GetComponent<Image>();
+                TempBoardImage.color = BaseColor;
+                BoardValue[i][j] = 0;
+            }
+        }
+
+        foreach (int j in j_GoalIndex)
+        {
+            for (int i = 0; i < 8 ; i++)
+            {
+                GameObject TempBoardImageGo = transform.Find(string.Format("BoardSingleImage_{0}_{1}", i, j)).gameObject;
+                Image TempBoardImage = TempBoardImageGo.GetComponent<Image>();
+                TempBoardImage.color = BaseColor;
+                BoardValue[i][j] = 0;
             }
         }
     }

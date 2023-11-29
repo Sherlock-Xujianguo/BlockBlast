@@ -9,7 +9,7 @@ public class BlockCompType
         new short [][]
         {   new short [] {1, 1, 1 },
             new short [] {0, 0, 0 },
-            new short []  {0, 0, 0 }
+            new short [] {0, 0, 0 }
         },
         new short [][]
         {   new short[] { 1, 0, 0 },
@@ -21,7 +21,23 @@ public class BlockCompType
             new short[] { 0, 0, 1 },
             new short[] { 0, 0, 1 }
         },
-
+        new short [][]
+        {   new short[] { 1, 1, 0 },
+            new short[] { 0, 1, 1 },
+            new short[] { 0, 0, 0 }
+        },
+        new short [][]
+        {   new short[] { 0, 1, 1 },
+            new short[] { 1, 1, 0 },
+            new short[] { 0, 0, 0 }
+        },
+        new short [][]
+        {   new short[] { 1, 1, 1, 1, 1 },
+            new short[] { 0, 0, 0, 0, 0 },
+            new short[] { 0, 0, 0, 0, 0 },
+            new short[] { 0, 0, 0, 0, 0 },
+            new short[] { 0, 0, 0, 0, 0 },
+        },
     };
 
     public short[][] GetBlockCompRandom()
@@ -47,6 +63,8 @@ public class BlockGenerator : MonoBehaviour
     Transform Pos_3;
 
     PuzzleManager PuzzleManagerInstance;
+
+    int ValidBlockCount = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -100,7 +118,7 @@ public class BlockGenerator : MonoBehaviour
         BlockComp_3.SetupBlock(blocks);
         BlockComp_3.RegisteryBlockGenerator(this);
 
-
+        ValidBlockCount = 3;
     }
 
     public void OnDragBlock(BaseBlockComp BlockCompInstance)
@@ -111,5 +129,18 @@ public class BlockGenerator : MonoBehaviour
     public void OnReleaseBlock(BaseBlockComp BlockCompInstance)
     {
         PuzzleManagerInstance.OnReleaseBlock(BlockCompInstance);
+    }
+
+    public void DestroyBlock(BaseBlockComp BlockComp)
+    {
+        Destroy(BlockComp.gameObject);
+        Destroy(BlockComp);
+        ValidBlockCount--;
+    }
+
+    public bool IsAreaEmpty()
+    {
+        if (ValidBlockCount == 0) return true;
+        return false;
     }
 }

@@ -31,7 +31,19 @@ public class PuzzleManager : MonoBehaviour
 
     public void OnReleaseBlock(BaseBlockComp BlockCompInstance)
     {
+        CheckerBoardInstance.OnReleaseBlock();
+    }
 
+    public void OnPlacedBlock()
+    {
+        BlockGeneratorInstance.DestroyBlock(CurrentDragBlock);
+
+        if (BlockGeneratorInstance.IsAreaEmpty())
+        {
+            BlockGeneratorInstance.ResetArea();
+        }
+
+        CheckerBoardInstance.CheckGoal();
     }
 
 }
