@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,23 +10,47 @@ public class CheckerBoard : MonoBehaviour
 
     bool CanPlaceCurrentBlock = false;
 
+    int CheckBoardSize = 8;
+
     // 0: 空 1：准备放置： 2：已放置
-    short[][] BoardValue = new short[8][] { new short[8], new short[8], new short[8], new short[8], new short[8], new short[8], new short[8], new short[8]};
-    Vector3[][] BoardPosition = new Vector3[8][] { new Vector3[8], new Vector3[8], new Vector3[8], new Vector3[8], new Vector3[8], new Vector3[8], new Vector3[8], new Vector3[8] };
+    short[][] BoardValue;
+    Vector3[][] BoardPosition;
     Color BaseColor;
     Color PlacedColor = new Color(0f, 1.0f, 0f);
-
+    
     // Start is called before the first frame update
     void Start()
     {
+        BoardValue = new short[CheckBoardSize][];
+        BoardPosition = new Vector3[CheckBoardSize][];
+        for (int i = 0; i < CheckBoardSize; i++)
+        {
+            BoardValue[i] = new short[CheckBoardSize];
+            BoardPosition[i] = new Vector3[CheckBoardSize];
+        }
+        
         SetupBoard();
+    }
+
+    public void Clear()
+    {
+        for (int i = 0; i < CheckBoardSize; i++)
+        {
+            for (int j = 0; j < CheckBoardSize; j++)
+            {
+                GameObject TempBoardImageGo = transform.Find(string.Format("BoardSingleImage_{0}_{1}", i, j)).gameObject;
+                Image TempBoardImage = TempBoardImageGo.GetComponent<Image>();
+                TempBoardImage.color = BaseColor;
+                BoardValue[i][j] = 0;
+            }
+        }
     }
 
     void __ClearReadyPlaceBlockValue() 
     {
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < CheckBoardSize; i++)
         {
-            for (int j = 0; j < 8; j++)
+            for (int j = 0; j < CheckBoardSize; j++)
             {
                 if (BoardValue[i][j] == 1)
                 {
@@ -67,14 +92,14 @@ public class CheckerBoard : MonoBehaviour
             }
 
             activeChildBlockCount++;
-            for (int j = 0; j < 8; j++)
+            for (int j = 0; j < CheckBoardSize; j++)
             {
                 if (!CanRelease)
                 {
                     break;
                 }
 
-                for (int k = 0; k < 8; k++)
+                for (int k = 0; k < CheckBoardSize; k++)
                 {
                     if (Vector3.Distance(childBlock.position, BoardPosition[j][k]) < 40)
                     {
@@ -118,9 +143,9 @@ public class CheckerBoard : MonoBehaviour
         RectTransform rect = image.GetComponent<RectTransform>();
         float size = rect.rect.width;
 
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < CheckBoardSize; i++)
         {
-            for (int j = 0; j < 8; j++)
+            for (int j = 0; j < CheckBoardSize; j++)
             {
                 GameObject TempImage = Instantiate(image);
                 TempImage.SetActive(true);
@@ -141,9 +166,9 @@ public class CheckerBoard : MonoBehaviour
             return;
         }
 
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < CheckBoardSize; i++)
         {
-            for (int j = 0; j < 8; j++)
+            for (int j = 0; j < CheckBoardSize; j++)
             {
                 if (BoardValue[i][j] == 1)
                 {
@@ -161,10 +186,10 @@ public class CheckerBoard : MonoBehaviour
     public void CheckGoal()
     {
         List<int> i_GoalIndex = new List<int>();
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < CheckBoardSize; i++)
         {
             bool canGoal = true;
-            for (int j = 0; j < 8; j++)
+            for (int j = 0; j < CheckBoardSize; j++)
             {
                 if (BoardValue[i][j] != 2)
                 {
@@ -179,10 +204,10 @@ public class CheckerBoard : MonoBehaviour
         }
 
         List<int> j_GoalIndex = new List<int>();
-        for (int j = 0; j < 8; j++)
+        for (int j = 0; j < CheckBoardSize; j++)
         {
             bool canGoal = true;
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < CheckBoardSize; i++)
             {
                 if (BoardValue[i][j] != 2)
                 {
@@ -198,7 +223,7 @@ public class CheckerBoard : MonoBehaviour
 
         foreach (int i in i_GoalIndex)
         {
-            for (int j = 0; j < 8 ; j++)
+            for (int j = 0; j < CheckBoardSize ; j++)
             {
                 GameObject TempBoardImageGo = transform.Find(string.Format("BoardSingleImage_{0}_{1}", i, j)).gameObject;
                 Image TempBoardImage = TempBoardImageGo.GetComponent<Image>();
@@ -209,7 +234,7 @@ public class CheckerBoard : MonoBehaviour
 
         foreach (int j in j_GoalIndex)
         {
-            for (int i = 0; i < 8 ; i++)
+            for (int i = 0; i < CheckBoardSize ; i++)
             {
                 GameObject TempBoardImageGo = transform.Find(string.Format("BoardSingleImage_{0}_{1}", i, j)).gameObject;
                 Image TempBoardImage = TempBoardImageGo.GetComponent<Image>();
@@ -217,5 +242,38 @@ public class CheckerBoard : MonoBehaviour
                 BoardValue[i][j] = 0;
             }
         }
+    }
+
+    public bool HasRoomForBlock(BaseBlockComp blockComp)
+    {
+        for (int i = 0; i < CheckBoardSize; i++)
+        {
+            for (int j = 0; j < CheckBoardSize ; j++)
+            {
+                if (BoardValue[i][j] != 0)
+                {
+                    continue;
+                }
+
+                int offsetIndex = 0;
+                for (offsetIndex = 0; offsetIndex < blockComp.BlockCount; offsetIndex++)
+                {
+                    int[] offset = blockComp.BlocksOffset[offsetIndex];
+                    if (i + offset[1] >= CheckBoardSize || i + offset[1] < 0 ||
+                        j + offset[0] >= CheckBoardSize || j + offset[0] < 0 ||
+                        BoardValue[i+offset[1]][j+offset[0]] != 0)
+                    {
+                        break;
+                    }
+                }
+                if (offsetIndex == blockComp.BlockCount)
+                {
+                    return true;
+                }
+            }
+        }
+
+
+        return false;
     }
 }

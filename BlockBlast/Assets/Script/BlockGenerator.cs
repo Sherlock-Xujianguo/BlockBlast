@@ -88,11 +88,32 @@ public class BlockGenerator : MonoBehaviour
         PuzzleManagerInstance = Instance;
     }
 
+    public List<BaseBlockComp> GetExistBlockComp()
+    {
+        List<BaseBlockComp> Result = new List<BaseBlockComp>();
+        if ( BlockComp_1 != null)
+        {
+            Result.Add(BlockComp_1);
+        }
+        if ( BlockComp_2 != null)
+        {
+            Result.Add(BlockComp_2);
+        }
+        if ( BlockComp_3 != null)
+        {
+            Result.Add(BlockComp_3);
+        }
+        return Result;
+    }
+
     public void ResetArea()
     {
-        Destroy(BlockComp_1);
-        Destroy(BlockComp_2);
-        Destroy(BlockComp_2);
+        if (BlockComp_1 != null)
+        DestroyImmediate(BlockComp_1.gameObject);
+        if ( BlockComp_2 != null)
+        DestroyImmediate(BlockComp_2.gameObject);
+        if ( BlockComp_3 != null)
+        DestroyImmediate(BlockComp_3.gameObject);
 
         short[][] blocks = BlockCompShapeGenerator.GetBlockCompRandom();
         BlockComp_1 = Instantiate(BaseBlockCompClass).GetComponent<BaseBlockComp>();
@@ -133,8 +154,8 @@ public class BlockGenerator : MonoBehaviour
 
     public void DestroyBlock(BaseBlockComp BlockComp)
     {
-        Destroy(BlockComp.gameObject);
-        Destroy(BlockComp);
+        DestroyImmediate(BlockComp.gameObject);
+        DestroyImmediate(BlockComp);
         ValidBlockCount--;
     }
 
