@@ -5,7 +5,6 @@ BlockBlast/Build/
 BlockBlast/Logs/
 BlockBlast/.vs/
 
-*.meta
 *.csproj
 *.sln
 *.tmp
