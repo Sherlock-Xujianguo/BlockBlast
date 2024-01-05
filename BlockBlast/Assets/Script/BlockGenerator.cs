@@ -2,56 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlockCompType
+public class BlockGenerator : FishMonoSingleton<BlockGenerator>
 {
-    short[][][] BlockCompShape = new short[][][]
-    {
-        new short [][]
-        {   new short [] {1, 1, 1 },
-            new short [] {0, 0, 0 },
-            new short [] {0, 0, 0 }
-        },
-        new short [][]
-        {   new short[] { 1, 0, 0 },
-            new short[] { 1, 0, 0 },
-            new short[] { 1, 0, 0 },
-        },
-        new short [][]
-        {   new short[] { 1, 1, 1 },
-            new short[] { 0, 0, 1 },
-            new short[] { 0, 0, 1 }
-        },
-        new short [][]
-        {   new short[] { 1, 1, 0 },
-            new short[] { 0, 1, 1 },
-            new short[] { 0, 0, 0 }
-        },
-        new short [][]
-        {   new short[] { 0, 1, 1 },
-            new short[] { 1, 1, 0 },
-            new short[] { 0, 0, 0 }
-        },
-        new short [][]
-        {   new short[] { 1, 1, 1, 1, 1 },
-            new short[] { 0, 0, 0, 0, 0 },
-            new short[] { 0, 0, 0, 0, 0 },
-            new short[] { 0, 0, 0, 0, 0 },
-            new short[] { 0, 0, 0, 0, 0 },
-        },
-    };
-
-    public short[][] GetBlockCompRandom()
-    {
-        int maxKind = BlockCompShape.GetLength(0);
-        int index = Random.Range(0, maxKind);
-
-        return BlockCompShape[index];
-    }
-}
-
-public class BlockGenerator : MonoBehaviour
-{
-    BlockCompType BlockCompShapeGenerator = new BlockCompType();
+    BlockGeneratorData GeneratorData = new BlockGeneratorData();
     BaseBlockComp BaseBlockCompClass;
 
     BaseBlockComp BlockComp_1;
@@ -62,7 +15,7 @@ public class BlockGenerator : MonoBehaviour
     Transform Pos_2;
     Transform Pos_3;
 
-    PuzzleManager PuzzleManagerInstance;
+    PuzzleManager PuzzleManagerInstance = PuzzleManager.GetInstnace;
 
     int ValidBlockCount = 0;
 
@@ -81,11 +34,6 @@ public class BlockGenerator : MonoBehaviour
     void Update()
     {
         
-    }
-
-    public void RegisteryPuzzleManager(PuzzleManager Instance)
-    {
-        PuzzleManagerInstance = Instance;
     }
 
     public List<BaseBlockComp> GetExistBlockComp()
@@ -115,28 +63,37 @@ public class BlockGenerator : MonoBehaviour
         if ( BlockComp_3 != null)
         DestroyImmediate(BlockComp_3.gameObject);
 
-        short[][] blocks = BlockCompShapeGenerator.GetBlockCompRandom();
+        short[][] blocks = GeneratorData.GetBlockCompRandom();
+        BlockData blockData = new BlockData();
+        blockData.Initialize(blocks);
+
         BlockComp_1 = Instantiate(BaseBlockCompClass).GetComponent<BaseBlockComp>();
         BlockComp_1.gameObject.SetActive(true);
         BlockComp_1.transform.SetParent(transform, false);
         BlockComp_1.transform.position = Pos_1.position;
-        BlockComp_1.SetupBlock(blocks);
+        BlockComp_1.SetupBlock(blockData);
         BlockComp_1.RegisteryBlockGenerator(this);
 
-        blocks = BlockCompShapeGenerator.GetBlockCompRandom();
+        blocks = GeneratorData.GetBlockCompRandom();
+        blockData = new BlockData();
+        blockData.Initialize(blocks);
+
         BlockComp_2 = Instantiate(BaseBlockCompClass).GetComponent<BaseBlockComp>();
         BlockComp_2.gameObject.SetActive(true);
         BlockComp_2.transform.SetParent(transform, false);
         BlockComp_2.transform.position = Pos_2.position;
-        BlockComp_2.SetupBlock(blocks);
+        BlockComp_2.SetupBlock(blockData);
         BlockComp_2.RegisteryBlockGenerator(this);
 
-        blocks = BlockCompShapeGenerator.GetBlockCompRandom();
+        blocks = GeneratorData.GetBlockCompRandom();
+        blockData = new BlockData();
+        blockData.Initialize(blocks);
+
         BlockComp_3 = Instantiate(BaseBlockCompClass).GetComponent<BaseBlockComp>();
         BlockComp_3.gameObject.SetActive(true);
         BlockComp_3.transform.SetParent(transform, false);
         BlockComp_3.transform.position = Pos_3.position;
-        BlockComp_3.SetupBlock(blocks);
+        BlockComp_3.SetupBlock(blockData);
         BlockComp_3.RegisteryBlockGenerator(this);
 
         ValidBlockCount = 3;

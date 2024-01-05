@@ -3,24 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PuzzleManager : MonoBehaviour
+public class PuzzleManager : FishMonoSingleton<PuzzleManager>
 {
-    CheckerBoard CheckerBoardInstance;
-    BlockGenerator BlockGeneratorInstance;
+    CheckerBoard CheckerBoardInstance = CheckerBoard.GetInstnace;
+    BlockGenerator BlockGeneratorInstance = BlockGenerator.GetInstnace;
     FailPanel FailPanelInstance;
     public BaseBlockComp CurrentDragBlock;
 
     // Start is called before the first frame update
     void Start()
     {
-        CheckerBoardInstance = transform.Find("CheckerBoard").GetComponent<CheckerBoard>();
-        BlockGeneratorInstance = transform.Find("BlockGenerator").GetComponent<BlockGenerator>();
         FailPanelInstance = transform.Find("FailPanel").GetComponent<FailPanel>();
         FailPanelInstance.gameObject.SetActive(false);
         
-        CheckerBoardInstance.RegisteryPuzzleManager(this);
-        BlockGeneratorInstance.RegisteryPuzzleManager(this);
-        FailPanelInstance.RegisteryPuzzleManager(this);
     }
 
     // Update is called once per frame

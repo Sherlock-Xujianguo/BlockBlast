@@ -4,9 +4,9 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CheckerBoard : MonoBehaviour
+public class CheckerBoard : FishMonoSingleton<CheckerBoard>
 {
-    PuzzleManager PuzzleManagerInstance;
+    PuzzleManager PuzzleManagerInstance = PuzzleManager.GetInstnace;
 
     bool CanPlaceCurrentBlock = false;
 
@@ -129,10 +129,6 @@ public class CheckerBoard : MonoBehaviour
         }
     }
 
-    public void RegisteryPuzzleManager(PuzzleManager Instance)
-    {
-        PuzzleManagerInstance = Instance;
-    }
 
     void SetupBoard()
     {

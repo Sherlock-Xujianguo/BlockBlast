@@ -9,10 +9,7 @@ public class BaseBlockComp : DragUI
     GameObject SingleBlockImageObject;
     BlockGenerator BlockGeneratorInstance;
 
-    public short[][] BlocksData;
-    public int BlockCount = 0;
-    public int[] FirstBlockPosition = new int[] { -1, -1 };
-    public int[][] BlocksOffset;
+    BlockData BlockData;
 
     float size = 20;
 
@@ -53,26 +50,21 @@ public class BaseBlockComp : DragUI
         BlockGeneratorInstance.OnReleaseBlock(this);
     }
 
-    public void SetupBlock(short[][] blocks)
+    public void SetupBlock(BlockData blockData)
     {
-        BlocksData = blocks;
-        BlockCount = 0;
-        
+        this.BlockData = blockData;
 
         if (SingleBlockImageObject == null)
         {
             Init();
         }
+        short[][] blocks = BlockData.Matraix;
         for (int i = 0; i < blocks.Length; i++)
         {
             for (int j = 0; j < blocks[i].Length; j++)
             {
                 short blockValue = blocks[i][j];
-                if (FirstBlockPosition[0] == -1 && blockValue > 0)
-                {
-                    FirstBlockPosition[0] = i;
-                    FirstBlockPosition[1] = j;
-                }
+
                 if (blockValue > 0 ) 
                 {
                     GameObject TempBlock = Instantiate<GameObject>(SingleBlockImageObject);
@@ -80,26 +72,8 @@ public class BaseBlockComp : DragUI
                     TempBlock.SetActive(true);
                     TempBlock.transform.SetParent(transform, false);
                     TempBlock.transform.localPosition = new Vector3(j*size + j, -i*size - i, 0);
-                    BlockCount++;
                 }
             }
         }
-
-        BlocksOffset = new int[BlockCount][];
-
-        int offsetIndex = 0;
-        for (int i = 0; i < blocks.Length; i++)
-        {
-            for (int j = 0; j < blocks[i].Length; j++)
-            {
-                short blockValue = blocks[i][j];
-                if (blockValue > 0)
-                {
-                    BlocksOffset[offsetIndex] = new int[] {i - FirstBlockPosition[0], j - FirstBlockPosition[1]};
-                    offsetIndex++;
-                }
-            }
-        }
-
     }
 }
