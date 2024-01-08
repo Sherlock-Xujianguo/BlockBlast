@@ -6,7 +6,11 @@ using UnityEngine.UI;
 
 public class CheckerBoard : FishMonoSingleton<CheckerBoard>
 {
-    PuzzleManager PuzzleManagerInstance = PuzzleManager.GetInstnace;
+    void Awake()
+    {
+        base.Awake();
+    }
+
 
     bool CanPlaceCurrentBlock = false;
 
@@ -66,14 +70,14 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
     // Update is called once per frame
     void Update()
     {
-        if (PuzzleManagerInstance == null || PuzzleManagerInstance.CurrentDragBlock == null)
+        if (PuzzleManager.GetInstance.CurrentDragBlock == null)
         {
             return;
         }
         CanPlaceCurrentBlock = false;
         __ClearReadyPlaceBlockValue();
 
-        int childBlockCount = PuzzleManagerInstance.CurrentDragBlock.transform.childCount;
+        int childBlockCount = PuzzleManager.GetInstance.CurrentDragBlock.transform.childCount;
         int activeChildBlockCount = 0;
         bool CanRelease = true;
         int CanPlaceCount = 0;
@@ -85,7 +89,7 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
                 break;
             }
 
-            Transform childBlock = PuzzleManagerInstance.CurrentDragBlock.transform.GetChild(i);
+            Transform childBlock = PuzzleManager.GetInstance.CurrentDragBlock.transform.GetChild(i);
             if (!childBlock.gameObject.activeSelf)
             {
                 continue;
@@ -176,7 +180,7 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
             }
         }
 
-        PuzzleManagerInstance.OnPlacedBlock();
+        PuzzleManager.GetInstance.OnPlacedBlock();
     }
 
     public void CheckGoal()
@@ -242,6 +246,7 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
 
     public bool HasRoomForBlock(BaseBlockComp blockComp)
     {
+        BlockData blockData = blockComp.BlockData;
         for (int i = 0; i < CheckBoardSize; i++)
         {
             for (int j = 0; j < CheckBoardSize ; j++)
@@ -252,9 +257,9 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
                 }
 
                 int offsetIndex = 0;
-                for (offsetIndex = 0; offsetIndex < blockComp.BlockCount; offsetIndex++)
+                for (offsetIndex = 0; offsetIndex < blockData.Size; offsetIndex++)
                 {
-                    int[] offset = blockComp.BlocksOffset[offsetIndex];
+                    int[] offset = blockData.Offset[offsetIndex];
                     if (i + offset[1] >= CheckBoardSize || i + offset[1] < 0 ||
                         j + offset[0] >= CheckBoardSize || j + offset[0] < 0 ||
                         BoardValue[i+offset[1]][j+offset[0]] != 0)
@@ -262,7 +267,7 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
                         break;
                     }
                 }
-                if (offsetIndex == blockComp.BlockCount)
+                if (offsetIndex == blockData.Size)
                 {
                     return true;
                 }

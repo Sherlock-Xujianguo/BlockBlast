@@ -5,8 +5,11 @@ using UnityEngine.UI;
 
 public class PuzzleManager : FishMonoSingleton<PuzzleManager>
 {
-    CheckerBoard CheckerBoardInstance = CheckerBoard.GetInstnace;
-    BlockGenerator BlockGeneratorInstance = BlockGenerator.GetInstnace;
+    void Awake()
+    {
+        base.Awake();
+    }
+
     FailPanel FailPanelInstance;
     public BaseBlockComp CurrentDragBlock;
 
@@ -15,7 +18,13 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
     {
         FailPanelInstance = transform.Find("FailPanel").GetComponent<FailPanel>();
         FailPanelInstance.gameObject.SetActive(false);
-        
+
+        FishMessage.GetInstnace.Register<OnDragBlockMessageData>(FishMessageDefine.OnDragBlock, OnDragBlock);
+    }
+
+    private void OnDestroy()
+    {
+        FishMessage.GetInstnace.Unregister<OnDragBlockMessageData>(FishMessageDefine.OnDragBlock, OnDragBlock);
     }
 
     // Update is called once per frame
@@ -24,26 +33,26 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
         
     }
 
-    public void OnDragBlock(BaseBlockComp BlockCompInstance)
+    public void OnDragBlock(OnDragBlockMessageData OnDragBlockMessageData)
     {
-        CurrentDragBlock = BlockCompInstance;
+        CurrentDragBlock = OnDragBlockMessageData.BlockComp;
     }
 
     public void OnReleaseBlock(BaseBlockComp BlockCompInstance)
     {
-        CheckerBoardInstance.OnReleaseBlock();
+        CheckerBoard.GetInstance.OnReleaseBlock();
     }
 
     public void OnPlacedBlock()
     {
-        BlockGeneratorInstance.DestroyBlock(CurrentDragBlock);
+        BlockGenerator.GetInstance.DestroyBlock(CurrentDragBlock);
 
-        if (BlockGeneratorInstance.IsAreaEmpty())
+        if (BlockGenerator.GetInstance.IsAreaEmpty())
         {
-            BlockGeneratorInstance.ResetArea();
+            BlockGenerator.GetInstance.ResetArea();
         }
 
-        CheckerBoardInstance.CheckGoal();
+        CheckerBoard.GetInstance.CheckGoal();
 
         if (IsGameFail())
         {
@@ -60,10 +69,10 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
 
     public bool IsGameFail()
     {
-        List<BaseBlockComp> existBlocks = BlockGeneratorInstance.GetExistBlockComp();
+        List<BaseBlockComp> existBlocks = BlockGenerator.GetInstance.GetExistBlockComp();
         foreach (BaseBlockComp block in existBlocks)
         {
-            if (CheckerBoardInstance.HasRoomForBlock(block))
+            if (CheckerBoard.GetInstance.HasRoomForBlock(block))
             {
                 return false;
             }
@@ -75,7 +84,7 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
     public void Restart()
     {
         FailPanelInstance.gameObject.SetActive(false);
-        CheckerBoardInstance.Clear();
-        BlockGeneratorInstance.ResetArea();
+        CheckerBoard.GetInstance.Clear();
+        BlockGenerator.GetInstance.ResetArea();
     }
 }

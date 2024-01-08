@@ -9,7 +9,7 @@ public class BaseBlockComp : DragUI
     GameObject SingleBlockImageObject;
     BlockGenerator BlockGeneratorInstance;
 
-    BlockData BlockData;
+    public BlockData BlockData;
 
     float size = 20;
 

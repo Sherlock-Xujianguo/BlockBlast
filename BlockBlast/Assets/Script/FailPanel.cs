@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class FailPanel : MonoBehaviour
 {
-    PuzzleManager PuzzleManagerInstance = PuzzleManager.GetInstnace;
+    PuzzleManager PuzzleManagerInstance = PuzzleManager.GetInstance;
     // Start is called before the first frame update    
     void Start()
     {
