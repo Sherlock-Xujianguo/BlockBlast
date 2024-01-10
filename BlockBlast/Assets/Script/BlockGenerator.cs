@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BlockGenerator : FishMonoSingleton<BlockGenerator>
 {
-    void Awake()
+    new void Awake()
     {
         base.Awake();
     }
@@ -106,12 +106,14 @@ public class BlockGenerator : FishMonoSingleton<BlockGenerator>
     {
         OnDragBlockMessageData data = new OnDragBlockMessageData();
         data.BlockComp = BlockCompInstance;
-        FishMessage.GetInstnace.Send(FishMessageDefine.OnDragBlock, data);
+        SendMessage(FishMessageDefine.OnDragBlock, data);
     }
 
     public void OnReleaseBlock(BaseBlockComp BlockCompInstance)
     {
-        PuzzleManager.GetInstance.OnReleaseBlock(BlockCompInstance);
+        OnReleaseBlockMessageData data = new OnReleaseBlockMessageData();
+        data.BlockComp = BlockCompInstance;
+        SendMessage(FishMessageDefine.OnReleaseBlock, data);
     }
 
     public void DestroyBlock(BaseBlockComp BlockComp)

@@ -6,34 +6,34 @@ using UnityEngine.UI;
 
 public class CheckerBoard : FishMonoSingleton<CheckerBoard>
 {
-    void Awake()
-    {
-        base.Awake();
-    }
+    CheckerBoardData Data = CheckerBoardData.GetInstnace;
+    int CheckBoardSize = CheckerBoardData.GetInstnace.CheckBoardSize;
 
+    Vector3[][] BoardPosition;
 
     bool CanPlaceCurrentBlock = false;
 
-    int CheckBoardSize = 8;
-
-    // 0: 空 1：准备放置： 2：已放置
-    short[][] BoardValue;
-    Vector3[][] BoardPosition;
+    // 临时表现
     Color BaseColor;
     Color PlacedColor = new Color(0f, 1.0f, 0f);
+
+    new void Awake()
+    {
+        base.Awake();
+    }
     
     // Start is called before the first frame update
     void Start()
     {
-        BoardValue = new short[CheckBoardSize][];
         BoardPosition = new Vector3[CheckBoardSize][];
         for (int i = 0; i < CheckBoardSize; i++)
         {
-            BoardValue[i] = new short[CheckBoardSize];
             BoardPosition[i] = new Vector3[CheckBoardSize];
         }
         
         SetupBoard();
+
+        RegisterMessage<OnReleaseBlockMessageData>(FishMessageDefine.OnReleaseBlock, OnReleaseBlock);
     }
 
     public void Clear()
@@ -45,9 +45,10 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
                 GameObject TempBoardImageGo = transform.Find(string.Format("BoardSingleImage_{0}_{1}", i, j)).gameObject;
                 Image TempBoardImage = TempBoardImageGo.GetComponent<Image>();
                 TempBoardImage.color = BaseColor;
-                BoardValue[i][j] = 0;
             }
         }
+
+        Data.ClearBoardValue();
     }
 
     void __ClearReadyPlaceBlockValue() 
@@ -56,12 +57,12 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
         {
             for (int j = 0; j < CheckBoardSize; j++)
             {
-                if (BoardValue[i][j] == 1)
+                if (Data.GetBoardValue(i, j) == 1)
                 {
                     GameObject TempBoardImageGo = transform.Find(string.Format("BoardSingleImage_{0}_{1}", i, j)).gameObject;
                     Image TempBoardImage = TempBoardImageGo.GetComponent<Image>();
                     TempBoardImage.color = BaseColor;
-                    BoardValue[i][j] = 0;
+                    Data.ClearBoardValue(i, j);
                 }
             }
         }
@@ -107,16 +108,16 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
                 {
                     if (Vector3.Distance(childBlock.position, BoardPosition[j][k]) < 40)
                     {
-                        if (BoardValue[j][k] == 0)
+                        if (Data.GetBoardValue(j, k) == 0)
                         {
                             GameObject TempBoardImageGo = transform.Find(string.Format("BoardSingleImage_{0}_{1}", j, k)).gameObject;
                             Image TempBoardImage = TempBoardImageGo.GetComponent<Image>();
                             TempBoardImage.color = new Color(1.0f, 0f, 0f);
-                            BoardValue[j][k] = 1;
+                            Data.SetBoardValue(j, k, 1);
 
                             CanPlaceCount++;
                         }
-                        else if (BoardValue[j][k] == 2)
+                        else if (Data.GetBoardValue(j, k) == 2)
                         {
                             CanRelease = false;
                             __ClearReadyPlaceBlockValue();
@@ -153,13 +154,13 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
                 TempImage.transform.SetParent(transform, false);
                 TempImage.name = string.Format("BoardSingleImage_{0}_{1}", i, j);
 
-                BoardValue[i][j] = 0;
+                Data.ClearBoardValue(i, j);
                 BoardPosition[i][j] = TempImage.transform.position;
             }
         }
     }
 
-    public void OnReleaseBlock()
+    public void OnReleaseBlock(OnReleaseBlockMessageData ReleaseData)
     {
         if (CanPlaceCurrentBlock == false)
         {
@@ -170,15 +171,18 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
         {
             for (int j = 0; j < CheckBoardSize; j++)
             {
-                if (BoardValue[i][j] == 1)
+                if (Data.GetBoardValue(i, j) == 1)
                 {
                     GameObject TempBoardImageGo = transform.Find(string.Format("BoardSingleImage_{0}_{1}", i, j)).gameObject;
                     Image TempBoardImage = TempBoardImageGo.GetComponent<Image>();
                     TempBoardImage.color = PlacedColor;
-                    BoardValue[i][j] = 2;
+                    Data.SetBoardValue(i,j, 2);
                 }
             }
         }
+        OnPlaceBlockMessageData PlaceData = new OnPlaceBlockMessageData();
+        PlaceData.BlockComp = ReleaseData.BlockComp;
+        SendMessage(FishMessageDefine.OnPlaceBlock, PlaceData);
 
         PuzzleManager.GetInstance.OnPlacedBlock();
     }
@@ -191,7 +195,7 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
             bool canGoal = true;
             for (int j = 0; j < CheckBoardSize; j++)
             {
-                if (BoardValue[i][j] != 2)
+                if (Data.GetBoardValue(i, j) != 2)
                 {
                     canGoal = false; 
                     break;
@@ -209,7 +213,7 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
             bool canGoal = true;
             for (int i = 0; i < CheckBoardSize; i++)
             {
-                if (BoardValue[i][j] != 2)
+                if (Data.GetBoardValue(i, j) != 2)
                 {
                     canGoal = false;
                     break;
@@ -228,7 +232,7 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
                 GameObject TempBoardImageGo = transform.Find(string.Format("BoardSingleImage_{0}_{1}", i, j)).gameObject;
                 Image TempBoardImage = TempBoardImageGo.GetComponent<Image>();
                 TempBoardImage.color = BaseColor;
-                BoardValue[i][j] = 0;
+                Data.SetBoardValue(i ,j , 0);
             }
         }
 
@@ -239,7 +243,7 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
                 GameObject TempBoardImageGo = transform.Find(string.Format("BoardSingleImage_{0}_{1}", i, j)).gameObject;
                 Image TempBoardImage = TempBoardImageGo.GetComponent<Image>();
                 TempBoardImage.color = BaseColor;
-                BoardValue[i][j] = 0;
+                Data.SetBoardValue(i, j, 0);
             }
         }
     }
@@ -251,7 +255,7 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
         {
             for (int j = 0; j < CheckBoardSize ; j++)
             {
-                if (BoardValue[i][j] != 0)
+                if (Data.GetBoardValue(i, j) != 0)
                 {
                     continue;
                 }
@@ -262,7 +266,7 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
                     int[] offset = blockData.Offset[offsetIndex];
                     if (i + offset[1] >= CheckBoardSize || i + offset[1] < 0 ||
                         j + offset[0] >= CheckBoardSize || j + offset[0] < 0 ||
-                        BoardValue[i+offset[1]][j+offset[0]] != 0)
+                        Data.GetBoardValue(i+offset[1], j+offset[0]) != 0)
                     {
                         break;
                     }

@@ -1,6 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+
+public interface IInitable
+{
+    void Init();
+}
 
 public class FishSingleton<T> : FishSimpleClass where T : new()
 {
@@ -14,7 +16,7 @@ public class FishSingleton<T> : FishSimpleClass where T : new()
             if (instance == null)
             {
                 instance = new T();
-                
+                (instance as IInitable)?.Init();
             }
             return instance;
         }

@@ -1,8 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using UnityEngine.Events;
 
 public class FishSimpleClass
 {
-    
+    protected void RegisterMessage<T>(string key, UnityAction<T> action)
+    {
+        FishMessage.GetInstnace.Register(key, action);
+    }
+
+    protected void UnregisterMessage<T>(string key, UnityAction<T> action)
+    {
+        FishMessage.GetInstnace.Unregister(key, action);
+    }
+
+    protected void SendMessage<T>(string key, T data)
+    {
+        FishMessage.GetInstnace.Send(key, data);
+    }
 }
+ 

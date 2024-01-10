@@ -27,7 +27,7 @@ public class BaseBlockComp : DragUI
     }
 
     // Start is called before the first frame update
-    public void Start()
+    new public void Start()
     {
         base.Start();
 

@@ -5,9 +5,11 @@ using UnityEngine.UI;
 
 public class PuzzleManager : FishMonoSingleton<PuzzleManager>
 {
-    void Awake()
+    new void Awake()
     {
         base.Awake();
+
+        ScoreData _instance = ScoreData.GetInstnace;
     }
 
     FailPanel FailPanelInstance;
@@ -19,12 +21,12 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
         FailPanelInstance = transform.Find("FailPanel").GetComponent<FailPanel>();
         FailPanelInstance.gameObject.SetActive(false);
 
-        FishMessage.GetInstnace.Register<OnDragBlockMessageData>(FishMessageDefine.OnDragBlock, OnDragBlock);
+        RegisterMessage<OnDragBlockMessageData>(FishMessageDefine.OnDragBlock, OnDragBlock);
     }
 
     private void OnDestroy()
     {
-        FishMessage.GetInstnace.Unregister<OnDragBlockMessageData>(FishMessageDefine.OnDragBlock, OnDragBlock);
+        UnregisterMessage<OnDragBlockMessageData>(FishMessageDefine.OnDragBlock, OnDragBlock);
     }
 
     // Update is called once per frame
@@ -36,11 +38,6 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
     public void OnDragBlock(OnDragBlockMessageData OnDragBlockMessageData)
     {
         CurrentDragBlock = OnDragBlockMessageData.BlockComp;
-    }
-
-    public void OnReleaseBlock(BaseBlockComp BlockCompInstance)
-    {
-        CheckerBoard.GetInstance.OnReleaseBlock();
     }
 
     public void OnPlacedBlock()

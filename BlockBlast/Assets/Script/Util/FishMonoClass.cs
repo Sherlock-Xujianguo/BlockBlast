@@ -1,18 +1,20 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Events;
 
 public class FishMonoClass : MonoBehaviour
 {
-
-    // Use this for initialization
-    void Start()
+    protected void RegisterMessage<T>(string key, UnityAction<T> action)
     {
-
+        FishMessage.GetInstnace.Register(key, action);
     }
 
-    // Update is called once per frame
-    void Update()
+    protected void UnregisterMessage<T>(string key, UnityAction<T> action)
     {
+        FishMessage.GetInstnace.Unregister(key, action);
+    }
 
+    protected void SendMessage<T>(string key, T data)
+    {
+        FishMessage.GetInstnace.Send(key, data);
     }
 }

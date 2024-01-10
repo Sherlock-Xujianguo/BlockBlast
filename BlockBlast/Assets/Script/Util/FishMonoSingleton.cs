@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 public class FishMonoSingleton<T> : FishMonoClass where T : Component
@@ -27,6 +26,7 @@ public class FishMonoSingleton<T> : FishMonoClass where T : Component
                 GameObject obj = new GameObject(typeof(T).Name, new[] { typeof(T) });
                 DontDestroyOnLoad(obj);
                 _instance = obj.GetComponent<T>();
+                (_instance as IInitable)?.Init();
             }
             else
             {
