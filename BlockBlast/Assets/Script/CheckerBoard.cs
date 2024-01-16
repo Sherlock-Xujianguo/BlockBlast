@@ -246,6 +246,16 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
                 Data.SetBoardValue(i, j, 0);
             }
         }
+
+        if (i_GoalIndex.Count + j_GoalIndex.Count > 0)
+        {
+            OnBlastBlockMessageData onBlastBlockMessageData = new OnBlastBlockMessageData();
+            onBlastBlockMessageData.Row = i_GoalIndex.Count;
+            onBlastBlockMessageData.Column = j_GoalIndex.Count;
+            onBlastBlockMessageData.TotalBlastRowAndColumn = j_GoalIndex.Count;
+
+            SendMessage(FishMessageDefine.OnBlastBlock, onBlastBlockMessageData);
+        }
     }
 
     public bool HasRoomForBlock(BaseBlockComp blockComp)

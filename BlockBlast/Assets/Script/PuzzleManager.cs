@@ -51,6 +51,9 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
 
         CheckerBoard.GetInstance.CheckGoal();
 
+        FinishPlaceBlockMessageData finishPlaceBlockMessageData = new FinishPlaceBlockMessageData();
+        SendMessage(FishMessageDefine.FinishPlaceBlock, finishPlaceBlockMessageData);
+
         if (IsGameFail())
         {
             IEnumerator WaitAndDoSomething(float waitTime)
