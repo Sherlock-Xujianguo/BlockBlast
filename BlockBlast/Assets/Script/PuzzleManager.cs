@@ -62,7 +62,6 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
                 FailPanelInstance.gameObject.SetActive(true);
             }
 
-            // 在代码中调用协程
             StartCoroutine(WaitAndDoSomething(2.0f));
         }
     }
@@ -83,7 +82,6 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
 
     public void Restart()
     {
-        FailPanelInstance.gameObject.SetActive(false);
         CheckerBoard.GetInstance.Clear();
         BlockGenerator.GetInstance.ResetArea();
     }

@@ -1,24 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.UI;
 
-public class FailPanel : MonoBehaviour
+public class FailPanel : FishMonoClass
 {
-    PuzzleManager PuzzleManagerInstance = PuzzleManager.GetInstance;
     // Start is called before the first frame update    
-    void Start()
+    void Awake()
     {
-        transform.Find("Restart").GetComponent<Button>().onClick.AddListener(() =>
-        {
-            PuzzleManagerInstance.Restart();
-        });
+        transform.Find("Restart").GetComponent<Button>().onClick.AddListener(OnRestart);
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnRestart()
     {
-        
+        gameObject.SetActive(false);
+
+        PuzzleManager.GetInstance.Restart();
     }
 
 }
