@@ -6,48 +6,47 @@ using UnityEngine.EventSystems;
 
 public class BaseBlockComp : DragUI
 {
-    GameObject SingleBlockImageObject;
-    BlockGenerator BlockGeneratorInstance;
-
     public BlockData BlockData;
 
-    float size = 20;
+    public GameObject RealBlockParentObject;
+
+    public GameObject PreviewBlockParentObject;
+
+    public float RealSize = 80;
+    public float PreviewSize = 40;
+
+    GameObject SingleBlockImageObject;
 
     public void Init()
     {
         SingleBlockImageObject = transform.Find("SingleBlockImage").gameObject;
         SingleBlockImageObject.SetActive(false);
+        RealBlockParentObject = transform.Find("RealBlockParent").gameObject;
+        RealBlockParentObject.SetActive(false);
+        PreviewBlockParentObject = transform.Find("PreviewBlockParent").gameObject;
+        PreviewBlockParentObject.SetActive(true);
+
         RectTransform rectTransform = SingleBlockImageObject.GetComponent<RectTransform>();
-        size = rectTransform.rect.width;
+        RealSize = rectTransform.rect.width;
+
     }
 
-    public void RegisteryBlockGenerator(BlockGenerator blockGeneratorInstance)
-    {
-        BlockGeneratorInstance = blockGeneratorInstance;
-    }
-
-    // Start is called before the first frame update
-    new public void Start()
-    {
-        base.Start();
-
-        Init();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    
     public override void OnBasePointerDown(PointerEventData EventData)
     {
-        BlockGeneratorInstance.OnDragBlock(this);
+        BlockGenerator.GetInstance.OnDragBlock(this);
+
+        // TODO:从preview到Real切换的动画
+        PreviewBlockParentObject.SetActive(false);
+        RealBlockParentObject.SetActive(true);
     }
 
     public override void OnBasePointerUp(PointerEventData EventData)
     {
-        BlockGeneratorInstance.OnReleaseBlock(this);
+        PreviewBlockParentObject.SetActive(true);
+        RealBlockParentObject.SetActive(false);
+
+        BlockGenerator.GetInstance.OnReleaseBlock(this);
     }
 
     public void SetupBlock(BlockData blockData)
@@ -67,13 +66,27 @@ public class BaseBlockComp : DragUI
 
                 if (blockValue > 0 ) 
                 {
-                    GameObject TempBlock = Instantiate<GameObject>(SingleBlockImageObject);
-                    TempBlock.name = string.Format("BlockCompSingleImage_{0}_{1}", i, j);
-                    TempBlock.SetActive(true);
-                    TempBlock.transform.SetParent(transform, false);
-                    TempBlock.transform.localPosition = new Vector3(j*size + j, -i*size - i, 0);
+                    GameObject RealTempBlock = Instantiate(SingleBlockImageObject);
+                    RealTempBlock.name = string.Format("RealBlockCompSingleImage_{0}_{1}", i, j);
+                    RealTempBlock.SetActive(true);
+                    RealTempBlock.transform.SetParent(RealBlockParentObject.transform, false);
+                    RealTempBlock.transform.localPosition = new Vector3(j*RealSize + j, -i*RealSize - i, 0);
+
+                    GameObject PreviewTempBlock = Instantiate(SingleBlockImageObject);
+                    PreviewTempBlock.name = string.Format("PreviewBlockCompSingleImage_{0}_{1}", i, j);
+                    PreviewTempBlock.SetActive(true);
+                    PreviewTempBlock.transform.SetParent(PreviewBlockParentObject.transform, false);
+                    PreviewTempBlock.transform.localPosition = new Vector3(j*PreviewSize+j, -i*PreviewSize-i, 0);
+                    PreviewTempBlock.GetComponent<RectTransform>().sizeDelta = new Vector2(PreviewSize, PreviewSize);
                 }
             }
         }
+    }
+
+    new public void Start()
+    {
+        base.Start();
+
+        Init();
     }
 }

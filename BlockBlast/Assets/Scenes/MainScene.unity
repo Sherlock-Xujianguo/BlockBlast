@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748172, a: 1}
+  m_IndirectSpecularColor: {r: 0.4465788, g: 0.49641287, b: 0.5748173, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2007,18 +2007,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 892246946}
     m_Modifications:
-    - target: {fileID: 2340679817421622110, guid: 1471f845844f0c24c9c97f8dd81adf04, type: 3}
-      propertyPath: m_Color.b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2340679817421622110, guid: 1471f845844f0c24c9c97f8dd81adf04, type: 3}
-      propertyPath: m_Color.g
-      value: 0.8558607
-      objectReference: {fileID: 0}
-    - target: {fileID: 2340679817421622110, guid: 1471f845844f0c24c9c97f8dd81adf04, type: 3}
-      propertyPath: m_Color.r
-      value: 0.8726415
-      objectReference: {fileID: 0}
     - target: {fileID: 2433595779394402598, guid: 1471f845844f0c24c9c97f8dd81adf04, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2106,14 +2094,6 @@ PrefabInstance:
     - target: {fileID: 8465066087279188113, guid: 1471f845844f0c24c9c97f8dd81adf04, type: 3}
       propertyPath: m_IsActive
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8513066790423773839, guid: 1471f845844f0c24c9c97f8dd81adf04, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 80
-      objectReference: {fileID: 0}
-    - target: {fileID: 8513066790423773839, guid: 1471f845844f0c24c9c97f8dd81adf04, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 80
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

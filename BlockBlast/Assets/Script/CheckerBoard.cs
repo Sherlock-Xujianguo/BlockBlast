@@ -6,14 +6,14 @@ using UnityEngine.UI;
 
 public class CheckerBoard : FishMonoSingleton<CheckerBoard>
 {
+    public static readonly int CheckBoardSize = CheckerBoardData.GetInstnace.CheckBoardSize;
+
     CheckerBoardData Data = CheckerBoardData.GetInstnace;
-    int CheckBoardSize = CheckerBoardData.GetInstnace.CheckBoardSize;
 
     Vector3[][] BoardPosition;
 
     bool CanPlaceCurrentBlock = false;
 
-    // ¡Ÿ ±±Ìœ÷
     Color BaseColor;
     Color PlacedColor = new Color(0f, 1.0f, 0f);
 
@@ -75,11 +75,19 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
         {
             return;
         }
+
+        UpdateCanPlaceCurrentBlock();
+    }
+
+    void UpdateCanPlaceCurrentBlock()
+    {
         CanPlaceCurrentBlock = false;
         __ClearReadyPlaceBlockValue();
 
-        int childBlockCount = PuzzleManager.GetInstance.CurrentDragBlock.transform.childCount;
-        int activeChildBlockCount = 0;
+        BaseBlockComp CurrentDragBlock = PuzzleManager.GetInstance.CurrentDragBlock;
+        GameObject RealBlockParent = CurrentDragBlock.RealBlockParentObject;
+
+        int childBlockCount = RealBlockParent.transform.childCount;
         bool CanRelease = true;
         int CanPlaceCount = 0;
 
@@ -90,13 +98,7 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
                 break;
             }
 
-            Transform childBlock = PuzzleManager.GetInstance.CurrentDragBlock.transform.GetChild(i);
-            if (!childBlock.gameObject.activeSelf)
-            {
-                continue;
-            }
-
-            activeChildBlockCount++;
+            Transform childBlock = RealBlockParent.transform.GetChild(i);
             for (int j = 0; j < CheckBoardSize; j++)
             {
                 if (!CanRelease)
@@ -106,7 +108,7 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
 
                 for (int k = 0; k < CheckBoardSize; k++)
                 {
-                    if (Vector3.Distance(childBlock.position, BoardPosition[j][k]) < 40)
+                    if (Vector3.Distance(childBlock.position, BoardPosition[j][k]) < CurrentDragBlock.RealSize/2)
                     {
                         if (Data.GetBoardValue(j, k) == 0)
                         {
@@ -128,12 +130,11 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
             }
         }
 
-        if (CanPlaceCount == activeChildBlockCount)
+        if (CanPlaceCount == childBlockCount)
         {
             CanPlaceCurrentBlock = true;
         }
     }
-
 
     void SetupBoard()
     {

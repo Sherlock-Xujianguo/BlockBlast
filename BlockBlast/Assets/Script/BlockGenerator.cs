@@ -75,7 +75,6 @@ public class BlockGenerator : FishMonoSingleton<BlockGenerator>
         BlockComp_1.transform.SetParent(transform, false);
         BlockComp_1.transform.position = Pos_1.position;
         BlockComp_1.SetupBlock(blockData);
-        BlockComp_1.RegisteryBlockGenerator(this);
 
         blocks = GeneratorData.GetBlockCompRandom();
         blockData = new BlockData();
@@ -86,7 +85,6 @@ public class BlockGenerator : FishMonoSingleton<BlockGenerator>
         BlockComp_2.transform.SetParent(transform, false);
         BlockComp_2.transform.position = Pos_2.position;
         BlockComp_2.SetupBlock(blockData);
-        BlockComp_2.RegisteryBlockGenerator(this);
 
         blocks = GeneratorData.GetBlockCompRandom();
         blockData = new BlockData();
@@ -97,7 +95,6 @@ public class BlockGenerator : FishMonoSingleton<BlockGenerator>
         BlockComp_3.transform.SetParent(transform, false);
         BlockComp_3.transform.position = Pos_3.position;
         BlockComp_3.SetupBlock(blockData);
-        BlockComp_3.RegisteryBlockGenerator(this);
 
         ValidBlockCount = 3;
     }
