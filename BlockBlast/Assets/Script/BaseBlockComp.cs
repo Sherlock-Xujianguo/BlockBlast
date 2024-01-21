@@ -12,9 +12,6 @@ public class BaseBlockComp : DragUI
 
     public GameObject PreviewBlockParentObject;
 
-    public float RealSize = 80;
-    public float PreviewSize = 40;
-
     GameObject SingleBlockImageObject;
 
     public void Init()
@@ -25,10 +22,6 @@ public class BaseBlockComp : DragUI
         RealBlockParentObject.SetActive(false);
         PreviewBlockParentObject = transform.Find("PreviewBlockParent").gameObject;
         PreviewBlockParentObject.SetActive(true);
-
-        RectTransform rectTransform = SingleBlockImageObject.GetComponent<RectTransform>();
-        RealSize = rectTransform.rect.width;
-
     }
 
     
@@ -67,12 +60,15 @@ public class BaseBlockComp : DragUI
                 if (blockValue > 0 ) 
                 {
                     GameObject RealTempBlock = Instantiate(SingleBlockImageObject);
+                    float RealSize = EffectConfig.RealBlockSize;
                     RealTempBlock.name = string.Format("RealBlockCompSingleImage_{0}_{1}", i, j);
                     RealTempBlock.SetActive(true);
                     RealTempBlock.transform.SetParent(RealBlockParentObject.transform, false);
                     RealTempBlock.transform.localPosition = new Vector3(j*RealSize + j, -i*RealSize - i, 0);
+                    RealTempBlock.GetComponent<RectTransform>().sizeDelta = new Vector2(RealSize, RealSize);
 
                     GameObject PreviewTempBlock = Instantiate(SingleBlockImageObject);
+                    float PreviewSize = EffectConfig.PreviewBlockSize;
                     PreviewTempBlock.name = string.Format("PreviewBlockCompSingleImage_{0}_{1}", i, j);
                     PreviewTempBlock.SetActive(true);
                     PreviewTempBlock.transform.SetParent(PreviewBlockParentObject.transform, false);

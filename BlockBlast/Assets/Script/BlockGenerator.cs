@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class BlockGenerator : FishMonoSingleton<BlockGenerator>
 {
-    new void Awake()
-    {
-        base.Awake();
-    }
-
     BlockGeneratorData GeneratorData = new BlockGeneratorData();
     BaseBlockComp BaseBlockCompClass;
 
@@ -22,7 +17,11 @@ public class BlockGenerator : FishMonoSingleton<BlockGenerator>
 
     int ValidBlockCount = 0;
 
-    // Start is called before the first frame update
+    new void Awake()
+    {
+        base.Awake();
+    }
+
     void Start()
     {
         BaseBlockCompClass = transform.Find("BaseBlockComp").GetComponent<BaseBlockComp>();
@@ -31,12 +30,6 @@ public class BlockGenerator : FishMonoSingleton<BlockGenerator>
         Pos_3 = transform.Find("Pos_3");
 
         ResetArea();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public List<BaseBlockComp> GetExistBlockComp()

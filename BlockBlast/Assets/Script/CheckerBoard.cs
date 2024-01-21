@@ -108,7 +108,7 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
 
                 for (int k = 0; k < CheckBoardSize; k++)
                 {
-                    if (Vector3.Distance(childBlock.position, BoardPosition[j][k]) < CurrentDragBlock.RealSize/2)
+                    if (Vector3.Distance(childBlock.position, BoardPosition[j][k]) < EffectConfig.RealBlockSize/2+5)
                     {
                         if (Data.GetBoardValue(j, k) == 0)
                         {
@@ -140,16 +140,18 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
     {
         GameObject image = transform.Find("Image").gameObject;
         Image tempimage = image.GetComponent<Image>();
+        
         BaseColor = tempimage.color;
         image.SetActive(false);
-        RectTransform rect = image.GetComponent<RectTransform>();
-        float size = rect.rect.width;
 
         for (int i = 0; i < CheckBoardSize; i++)
         {
             for (int j = 0; j < CheckBoardSize; j++)
             {
                 GameObject TempImage = Instantiate(image);
+                float size = EffectConfig.RealBlockSize;
+                TempImage.GetComponent<RectTransform>().sizeDelta = new Vector2(size, size);
+
                 TempImage.SetActive(true);
                 TempImage.transform.localPosition = new Vector3(-size * 3 - size / 2 + size * i + i, size * 3 + size / 2 - size * j - j, 0);
                 TempImage.transform.SetParent(transform, false);
