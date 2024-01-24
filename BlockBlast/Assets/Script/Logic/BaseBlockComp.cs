@@ -1,16 +1,22 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class BaseBlockComp : DragUI
 {
+    [SerializeField]
+    public List<Sprite> Color;
+
+    public int ColorIndex;
+
     public BlockData BlockData;
 
     public GameObject RealBlockParentObject;
 
     public GameObject PreviewBlockParentObject;
+
+    public GameObject FirstRealBlock;
 
     GameObject SingleBlockImageObject;
 
@@ -18,6 +24,12 @@ public class BaseBlockComp : DragUI
     {
         SingleBlockImageObject = transform.Find("SingleBlockImage").gameObject;
         SingleBlockImageObject.SetActive(false);
+
+        int index = Random.Range(0, Color.Count);
+        Sprite ColorSprite = Color[index];
+        SingleBlockImageObject.GetComponent<Image>().sprite = ColorSprite;
+        ColorIndex = index;
+
         RealBlockParentObject = transform.Find("RealBlockParent").gameObject;
         RealBlockParentObject.SetActive(false);
         PreviewBlockParentObject = transform.Find("PreviewBlockParent").gameObject;
@@ -44,12 +56,12 @@ public class BaseBlockComp : DragUI
 
     public void SetupBlock(BlockData blockData)
     {
-        this.BlockData = blockData;
+        Init();
 
-        if (SingleBlockImageObject == null)
-        {
-            Init();
-        }
+        BlockData = blockData;
+
+        FirstRealBlock = null;
+
         short[][] blocks = BlockData.Matraix;
         for (int i = 0; i < blocks.Length; i++)
         {
@@ -66,6 +78,11 @@ public class BaseBlockComp : DragUI
                     RealTempBlock.transform.SetParent(RealBlockParentObject.transform, false);
                     RealTempBlock.transform.localPosition = new Vector3(j*RealSize + j, -i*RealSize - i, 0);
                     RealTempBlock.GetComponent<RectTransform>().sizeDelta = new Vector2(RealSize, RealSize);
+                    RealTempBlock.GetComponent<Image>().sprite = Color[ColorIndex];
+                    if (FirstRealBlock == null)
+                    {
+                        FirstRealBlock = RealTempBlock;
+                    }
 
                     GameObject PreviewTempBlock = Instantiate(SingleBlockImageObject);
                     float PreviewSize = EffectConfig.PreviewBlockSize;
@@ -74,6 +91,7 @@ public class BaseBlockComp : DragUI
                     PreviewTempBlock.transform.SetParent(PreviewBlockParentObject.transform, false);
                     PreviewTempBlock.transform.localPosition = new Vector3(j*PreviewSize+j, -i*PreviewSize-i, 0);
                     PreviewTempBlock.GetComponent<RectTransform>().sizeDelta = new Vector2(PreviewSize, PreviewSize);
+                    PreviewTempBlock.GetComponent<Image>().sprite = Color[ColorIndex];
                 }
             }
         }
@@ -83,6 +101,6 @@ public class BaseBlockComp : DragUI
     {
         base.Start();
 
-        Init();
+        
     }
 }

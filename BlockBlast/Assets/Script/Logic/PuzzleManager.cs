@@ -18,6 +18,8 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
     // Start is called before the first frame update
     void Start()
     {
+        Application.targetFrameRate = 60;
+
         FailPanelInstance = transform.Find("FailPanel").GetComponent<FailPanel>();
         FailPanelInstance.gameObject.SetActive(false);
 
@@ -71,7 +73,7 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
         List<BaseBlockComp> existBlocks = BlockGenerator.GetInstance.GetExistBlockComp();
         foreach (BaseBlockComp block in existBlocks)
         {
-            if (CheckerBoard.GetInstance.HasRoomForBlock(block))
+            if (CheckerBoardData.GetInstnace.HasRoomForBlock(block))
             {
                 return false;
             }

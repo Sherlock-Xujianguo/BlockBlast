@@ -41,7 +41,8 @@ public class BlockData : FishSimpleClass
                 short blockValue = Matraix[i][j];
                 if (blockValue > 0)
                 {
-                    Offset[offsetIndex] = new int[] { i - FirstBlockPosition[0], j - FirstBlockPosition[1] };
+                    // 这里对应的是棋盘逻辑的offset
+                    Offset[offsetIndex] = new int[] {j - FirstBlockPosition[1], i - FirstBlockPosition[0]};
                     offsetIndex++;
                 }
             }

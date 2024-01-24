@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3047feb81271e42dab0c0d8465e63783, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -234,11 +234,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 8465066087279188113}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74100abeb432fbc4e8ed8f9fda68cdff, type: 3}
+  m_Script: {fileID: 11500000, guid: 6b07358150ef24731aa3820bc66dd6e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RealBlockParentObject: {fileID: 0}
-  PreviewBlockParentObject: {fileID: 0}
+  Color:
+  - {fileID: 21300000, guid: 3047feb81271e42dab0c0d8465e63783, type: 3}
+  - {fileID: 21300000, guid: 3a0d3ab0856124aff81519e6fa470e39, type: 3}
+  - {fileID: 21300000, guid: 41f4ad73dbb444e9986b7441ad401c43, type: 3}
+  - {fileID: 21300000, guid: ffecae5c60e8c4e9f81ded87ce88af10, type: 3}
+  - {fileID: 21300000, guid: 788727f8f4dae4dd48e1c150b73a92ea, type: 3}
+  - {fileID: 21300000, guid: ff0fe0afdc4d14c5597a9dfadd21891e, type: 3}
+  CurrentColorSprite: {fileID: 0}
+  RealBlockParentObject: {fileID: 8887199185013475407}
+  PreviewBlockParentObject: {fileID: 6177307617075691525}
 --- !u!1 &8887199185013475407
 GameObject:
   m_ObjectHideFlags: 0
