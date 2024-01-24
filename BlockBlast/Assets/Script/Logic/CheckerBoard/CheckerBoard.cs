@@ -16,6 +16,8 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
 
     Color OriginColor;
 
+    Dictionary<int[], Sprite> OriginColorSprite = new Dictionary<int[], Sprite>();
+
     new void Awake()
     {
         base.Awake();
@@ -118,7 +120,7 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
                     GameObject TempBoardImageGo = transform.Find(string.Format("BoardSingleImage_{0}_{1}", i, j)).gameObject;
                     Image TempBoardImage = TempBoardImageGo.GetComponent<Image>();
                     TempBoardImage.sprite = ReleaseData.BlockComp.Color[ReleaseData.BlockComp.ColorIndex];
-                    TempBoardImage.color = new Color(255, 255, 255);
+                    TempBoardImage.color = new Color(1, 1, 1);
                     Data.SetBoardPlaced(i, j);
                 }
             }
@@ -146,6 +148,17 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
                 }
             }
         }
+
+        foreach (KeyValuePair<int[], Sprite> pair in OriginColorSprite)
+        {
+            int[] ijIndex = pair.Key;
+            Sprite color = pair.Value;
+            GameObject TempBoardImageGo = transform.Find(string.Format("BoardSingleImage_{0}_{1}", ijIndex[0], ijIndex[1])).gameObject;
+            Image TempBoardImage = TempBoardImageGo.GetComponent<Image>();
+            TempBoardImage.sprite = color;
+        }
+
+        OriginColorSprite.Clear();
     }
 
     
@@ -155,6 +168,7 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
         CanPlaceCurrentBlock = false;
 
         BaseBlockComp CurrentDragBlock = PuzzleManager.GetInstance.CurrentDragBlock;
+        Sprite DragColorSprite = CurrentDragBlock.Color[CurrentDragBlock.ColorIndex];
 
 
         // 找到开头的方块对应的棋盘坐标
@@ -210,7 +224,40 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
             Data.SetBoardReady(i, j);
             GameObject TempBoardImageGo = transform.Find(string.Format("BoardSingleImage_{0}_{1}", i, j)).gameObject;
             Image TempBoardImage = TempBoardImageGo.GetComponent<Image>();
-            TempBoardImage.color = new Color(1.0f, 0f, 0f);
+            TempBoardImage.sprite = DragColorSprite;
+            TempBoardImage.color = new Color(1, 1, 1, 0.4f);
+        }
+
+        List<int> i_ReadlyIndex;
+        List<int> j_ReadlyIndex;
+        
+        Data.GetReadyRowAndColumn(out i_ReadlyIndex, out j_ReadlyIndex);
+        foreach (int i in i_ReadlyIndex)
+        {
+            for (int j = 0; j < CheckBoardSize; j++)
+            {
+                GameObject TempBoardImageGo = transform.Find(string.Format("BoardSingleImage_{0}_{1}", i, j)).gameObject;
+                Image TempBoardImage = TempBoardImageGo.GetComponent<Image>();
+                Sprite color = TempBoardImage.sprite;
+                int[] pair = new int[2] { i, j };
+                OriginColorSprite.Add(pair, color);
+
+                TempBoardImage.sprite = DragColorSprite;
+            }
+        }
+
+        foreach (int j in j_ReadlyIndex)
+        {
+            for (int i = 0; i < CheckBoardSize; i++)
+            {
+                GameObject TempBoardImageGo = transform.Find(string.Format("BoardSingleImage_{0}_{1}", i, j)).gameObject;
+                Image TempBoardImage = TempBoardImageGo.GetComponent<Image>();
+                Sprite color = TempBoardImage.sprite;
+                int[] pair = new int[2] { i, j };
+                OriginColorSprite.Add(pair, color);
+
+                TempBoardImage.sprite = DragColorSprite;
+            }
         }
     }
 

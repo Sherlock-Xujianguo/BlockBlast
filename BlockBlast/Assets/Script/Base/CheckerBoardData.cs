@@ -98,6 +98,45 @@ public class CheckerBoardData : FishSingleton<CheckerBoardData>, IInitable
         }
     }
 
+    public void GetReadyRowAndColumn(out List<int> i_GoalIndex, out List<int> j_GoalIndex)
+    {
+        i_GoalIndex = new List<int>();
+        for (int i = 0; i < CheckBoardSize; i++)
+        {
+            bool canGoal = true;
+            for (int j = 0; j < CheckBoardSize; j++)
+            {
+                if (! (IsBoardPlaced(i, j) || IsBoardReady(i, j) ))
+                {
+                    canGoal = false;
+                    break;
+                }
+            }
+            if (canGoal)
+            {
+                i_GoalIndex.Add(i);
+            }
+        }
+
+        j_GoalIndex = new List<int>();
+        for (int j = 0; j < CheckBoardSize; j++)
+        {
+            bool canGoal = true;
+            for (int i = 0; i < CheckBoardSize; i++)
+            {
+                if (! (IsBoardPlaced(i, j) || IsBoardReady(i, j) ))
+                {
+                    canGoal = false;
+                    break;
+                }
+            }
+            if (canGoal)
+            {
+                j_GoalIndex.Add(j);
+            }
+        }
+    }
+
     public bool HasRoomForBlock(BaseBlockComp blockComp)
     {
         BlockData blockData = blockComp.BlockData;
