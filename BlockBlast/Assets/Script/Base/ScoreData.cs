@@ -1,12 +1,28 @@
 ﻿
 
 using UnityEngine;
+using System;
 
 public class ScoreData : FishSingleton<ScoreData>, IInitable
 {
 
-    long CurrentCheckerBoardScore = 0;
-    long ScoreBuffer = 0;
+    // 当前显示在屏幕上的得分
+    int CurrentCheckerBoardScore = 0;
+
+    // 单次计算得分的中间缓存
+    int ScoreBuffer = 0;
+
+    // 最高分
+    int PlayerMaxScore = 0;
+
+    // 最高分更新时间戳 (天)
+    int PlayerMaxScoreTimeStamp = 0;
+
+    // 周最高分
+    int PlayerWeekMaxScore = 0;
+
+    // 周最高分更新时间戳 (天)
+    int PlayerWeekMaxScoreTimeStamp = 0;
 
     int ComboCount = 0;
     int MissCount = 0;
@@ -15,10 +31,31 @@ public class ScoreData : FishSingleton<ScoreData>, IInitable
 
     public void Init()
     {
+        PlayerMaxScore = PlayerPrefs.GetInt("PlayerMaxScore", 0);
+        PlayerWeekMaxScore = PlayerPrefs.GetInt("PlayerWeekMaxScore", 0);
+        
+
         RegisterMessage<OnPlaceBlockMessageData>(FishMessageDefine.OnPlaceBlock, OnPlaceBlock);
         RegisterMessage<OnScoreUpdateMessageData>(FishMessageDefine.OnScoreUpdate, OnScoreUpdate);
         RegisterMessage<OnBlastBlockMessageData>(FishMessageDefine.OnBlastBlock, OnBlastBlock);
         RegisterMessage<FinishPlaceBlockMessageData>(FishMessageDefine.FinishPlaceBlock, FinishPlaceBlock);
+    }
+
+    public void Restart()
+    {
+        CurrentCheckerBoardScore = 0;
+        ScoreBuffer = 0;
+        ComboCount = 0;
+        MissCount = 0;
+
+        OnComboUpdateMessageData onComboUpdateMessageData = new OnComboUpdateMessageData();
+        onComboUpdateMessageData.ComboCount = ComboCount;
+        SendMessage(FishMessageDefine.OnComboUpdate, onComboUpdateMessageData);
+
+        OnScoreUpdateMessageData onScoreUpdateData = new OnScoreUpdateMessageData();
+        onScoreUpdateData.old_score = CurrentCheckerBoardScore;
+        onScoreUpdateData.new_score = CurrentCheckerBoardScore;
+        SendMessage(FishMessageDefine.OnScoreUpdate, onScoreUpdateData);
     }
 
     void OnPlaceBlock(OnPlaceBlockMessageData PlaceData)
@@ -82,6 +119,12 @@ public class ScoreData : FishSingleton<ScoreData>, IInitable
         }
         CurrentCheckerBoardScore += ScoreBuffer;
         ScoreBuffer = 0;
+
+        if (CurrentCheckerBoardScore > PlayerMaxScore)
+        {
+            PlayerMaxScore = CurrentCheckerBoardScore;
+            PlayerPrefs.SetInt("PlayerMaxScore", PlayerMaxScore);
+        }
     }
 
     void OnScoreUpdate(OnScoreUpdateMessageData onScoreUpdateMessageData)

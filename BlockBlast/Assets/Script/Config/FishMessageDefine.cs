@@ -8,6 +8,7 @@ public static class FishMessageDefine
     public static readonly string OnComboUpdate = "OnComboUpdate";
     public static readonly string OnBlastBlock = "OnBlastBlock";
     public static readonly string FinishPlaceBlock = "FinishPlaceBlock";
+    public static readonly string Restart = "Restart";
     
 }
 

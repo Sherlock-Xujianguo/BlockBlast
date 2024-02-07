@@ -46,11 +46,6 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
     {
         BlockGenerator.GetInstance.DestroyBlock(CurrentDragBlock);
 
-        if (BlockGenerator.GetInstance.IsAreaEmpty())
-        {
-            BlockGenerator.GetInstance.ResetArea();
-        }
-
         CheckerBoard.GetInstance.CheckGoal();
 
         FinishPlaceBlockMessageData finishPlaceBlockMessageData = new FinishPlaceBlockMessageData();
@@ -66,6 +61,13 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
 
             StartCoroutine(WaitAndDoSomething(2.0f));
         }
+        else
+        {
+            if (BlockGenerator.GetInstance.IsAreaEmpty())
+            {
+                BlockGenerator.GetInstance.ResetArea();
+            }
+        }
     }
 
     public bool IsGameFail()
@@ -73,7 +75,7 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
         List<BaseBlockComp> existBlocks = BlockGenerator.GetInstance.GetExistBlockComp();
         foreach (BaseBlockComp block in existBlocks)
         {
-            if (CheckerBoardData.GetInstnace.HasRoomForBlock(block))
+            if (CheckerBoardData.GetInstnace.HasRoomForBlock(block.BlockData))
             {
                 return false;
             }

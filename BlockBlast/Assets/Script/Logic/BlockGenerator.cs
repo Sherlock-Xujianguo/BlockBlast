@@ -15,6 +15,8 @@ public class BlockGenerator : FishMonoSingleton<BlockGenerator>
     Transform Pos_2;
     Transform Pos_3;
 
+    static int ColorIndex = 0;
+
     int ValidBlockCount = 0;
 
     new void Awake()
@@ -59,35 +61,35 @@ public class BlockGenerator : FishMonoSingleton<BlockGenerator>
         if ( BlockComp_3 != null)
         DestroyImmediate(BlockComp_3.gameObject);
 
-        short[][] blocks = GeneratorData.GetBlockCompRandom();
+        short[][][] blocks = GeneratorData.GetBlockCompRandom();
         BlockData blockData = new BlockData();
-        blockData.Initialize(blocks);
+        blockData.Initialize(blocks[0]);
 
         BlockComp_1 = Instantiate(BaseBlockCompClass).GetComponent<BaseBlockComp>();
         BlockComp_1.gameObject.SetActive(true);
         BlockComp_1.transform.SetParent(transform, false);
         BlockComp_1.transform.position = Pos_1.position;
-        BlockComp_1.SetupBlock(blockData);
+        BlockComp_1.SetupBlock(blockData, ColorIndex++);
 
         blocks = GeneratorData.GetBlockCompRandom();
         blockData = new BlockData();
-        blockData.Initialize(blocks);
+        blockData.Initialize(blocks[1]);
 
         BlockComp_2 = Instantiate(BaseBlockCompClass).GetComponent<BaseBlockComp>();
         BlockComp_2.gameObject.SetActive(true);
         BlockComp_2.transform.SetParent(transform, false);
         BlockComp_2.transform.position = Pos_2.position;
-        BlockComp_2.SetupBlock(blockData);
+        BlockComp_2.SetupBlock(blockData, ColorIndex++);
 
         blocks = GeneratorData.GetBlockCompRandom();
         blockData = new BlockData();
-        blockData.Initialize(blocks);
+        blockData.Initialize(blocks[2]);
 
         BlockComp_3 = Instantiate(BaseBlockCompClass).GetComponent<BaseBlockComp>();
         BlockComp_3.gameObject.SetActive(true);
         BlockComp_3.transform.SetParent(transform, false);
         BlockComp_3.transform.position = Pos_3.position;
-        BlockComp_3.SetupBlock(blockData);
+        BlockComp_3.SetupBlock(blockData, ColorIndex++);
 
         ValidBlockCount = 3;
     }

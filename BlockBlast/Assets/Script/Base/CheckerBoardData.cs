@@ -7,13 +7,20 @@ public class CheckerBoardData : FishSingleton<CheckerBoardData>, IInitable
     // 0: 空 1：准备放置： 2：已放置
     public short[][] BoardValue;
 
+    public int CurrentBlockOnBoardCount = 0;
+    public int CurrentEmptyCount = 0;
+
     public void Init()
     {
+        CurrentEmptyCount = CheckBoardSize * CheckBoardSize;
+
         BoardValue = new short[CheckBoardSize][];
         for (int i = 0; i < CheckBoardSize; i++)
         {
             BoardValue[i] = new short[CheckBoardSize];
         }
+
+        RegisterMessage<FinishPlaceBlockMessageData>(FishMessageDefine.FinishPlaceBlock, OnFinishPlaceBlock);
     }
 
 
@@ -137,9 +144,8 @@ public class CheckerBoardData : FishSingleton<CheckerBoardData>, IInitable
         }
     }
 
-    public bool HasRoomForBlock(BaseBlockComp blockComp)
+    public bool HasRoomForBlock(BlockData blockData)
     {
-        BlockData blockData = blockComp.BlockData;
         for (int i = 0; i < CheckBoardSize; i++)
         {
             for (int j = 0; j < CheckBoardSize; j++)
@@ -153,9 +159,9 @@ public class CheckerBoardData : FishSingleton<CheckerBoardData>, IInitable
                 for (offsetIndex = 0; offsetIndex < blockData.Size; offsetIndex++)
                 {
                     int[] offset = blockData.Offset[offsetIndex];
-                    if (i + offset[1] >= CheckBoardSize || i + offset[1] < 0 ||
-                        j + offset[0] >= CheckBoardSize || j + offset[0] < 0 ||
-                        !IsBoardClear(i + offset[1], j + offset[0]))
+                    if (i + offset[0] >= CheckBoardSize || i + offset[0] < 0 ||
+                        j + offset[1] >= CheckBoardSize || j + offset[1] < 0 ||
+                        !IsBoardClear(i + offset[0], j + offset[1]))
                     {
                         break;
                     }
@@ -169,6 +175,24 @@ public class CheckerBoardData : FishSingleton<CheckerBoardData>, IInitable
 
 
         return false;
+    }
+
+
+    public void OnFinishPlaceBlock(FinishPlaceBlockMessageData finishPlaceBlockMessageData)
+    {
+        CurrentBlockOnBoardCount = 0;
+        for (int i = 0; i < CheckBoardSize; i++)
+        {
+            for (int j = 0; j < CheckBoardSize; j++)
+            {
+                if (IsBoardPlaced(i, j))
+                {
+                    CurrentBlockOnBoardCount++;
+                }
+            }
+        }
+
+        CurrentEmptyCount = CheckBoardSize * CheckBoardSize - CurrentBlockOnBoardCount;
     }
 
 }
