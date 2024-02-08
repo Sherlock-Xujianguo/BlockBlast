@@ -51,22 +51,20 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
         FinishPlaceBlockMessageData finishPlaceBlockMessageData = new FinishPlaceBlockMessageData();
         SendMessage(FishMessageDefine.FinishPlaceBlock, finishPlaceBlockMessageData);
 
-        if (IsGameFail())
+
+        if (BlockGenerator.GetInstance.IsAreaEmpty())
+        {
+            BlockGenerator.GetInstance.ResetArea();
+        }
+        else if (IsGameFail())
         {
             IEnumerator WaitAndDoSomething(float waitTime)
             {
-                yield return new WaitForSeconds(waitTime);  
+                yield return new WaitForSeconds(waitTime);
                 FailPanelInstance.gameObject.SetActive(true);
             }
 
             StartCoroutine(WaitAndDoSomething(2.0f));
-        }
-        else
-        {
-            if (BlockGenerator.GetInstance.IsAreaEmpty())
-            {
-                BlockGenerator.GetInstance.ResetArea();
-            }
         }
     }
 
