@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class BlockGenerator : FishMonoSingleton<BlockGenerator>
@@ -22,16 +23,21 @@ public class BlockGenerator : FishMonoSingleton<BlockGenerator>
     new void Awake()
     {
         base.Awake();
-    }
 
-    void Start()
-    {
         BaseBlockCompClass = transform.Find("BaseBlockComp").GetComponent<BaseBlockComp>();
         Pos_1 = transform.Find("Pos_1");
         Pos_2 = transform.Find("Pos_2");
         Pos_3 = transform.Find("Pos_3");
 
-        ResetArea();
+        if (PuzzleManager.GetInstance.Debug)
+        {
+            transform.Find("Debug").gameObject.SetActive(true);
+        }
+    }
+
+    void Start()
+    {
+
     }
 
     public List<BaseBlockComp> GetExistBlockComp()
@@ -60,6 +66,16 @@ public class BlockGenerator : FishMonoSingleton<BlockGenerator>
         DestroyImmediate(BlockComp_2.gameObject);
         if ( BlockComp_3 != null)
         DestroyImmediate(BlockComp_3.gameObject);
+
+        RoundData.RoundState state = RoundData.GetInstnace.CurrentRoundState;
+        if (PuzzleManager.GetInstance.Debug)
+        {
+            TextMeshProUGUI text = transform.Find("Debug/RoundState").GetComponent<TextMeshProUGUI>();
+            if (text)
+            {
+                text.SetText(state.ToString());
+            }
+        }
 
         short[][][] blocks = GeneratorData.GetBlockCompRandom();
         BlockData blockData = new BlockData();

@@ -92,6 +92,8 @@ public class CheckerBoard : FishMonoSingleton<CheckerBoard>
             }
         }
 
+        CheckerBoardData.GetInstnace.OnFinishPlaceBlock();
+
         if (i_GoalIndex.Count + j_GoalIndex.Count > 0)
         {
             OnBlastBlockMessageData onBlastBlockMessageData = new OnBlastBlockMessageData();

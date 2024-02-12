@@ -5,6 +5,13 @@ using UnityEngine.UI;
 
 public class PuzzleManager : FishMonoSingleton<PuzzleManager>
 {
+    [HideInInspector]
+    public BaseBlockComp CurrentDragBlock;
+
+    public bool Debug = false;
+
+    FailPanel FailPanelInstance;
+
     new void Awake()
     {
         base.Awake();
@@ -12,8 +19,7 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
         ScoreData _instance = ScoreData.GetInstnace;
     }
 
-    FailPanel FailPanelInstance;
-    public BaseBlockComp CurrentDragBlock;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +30,8 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
         FailPanelInstance.gameObject.SetActive(false);
 
         RegisterMessage<OnDragBlockMessageData>(FishMessageDefine.OnDragBlock, OnDragBlock);
+
+        Restart();
     }
 
     private void OnDestroy()
@@ -54,6 +62,7 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
 
         if (BlockGenerator.GetInstance.IsAreaEmpty())
         {
+            RoundData.GetInstnace.UpdateRoundState();
             BlockGenerator.GetInstance.ResetArea();
         }
         else if (IsGameFail())
@@ -84,7 +93,10 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
 
     public void Restart()
     {
+        ScoreData.GetInstnace.Restart();
         CheckerBoard.GetInstance.Clear();
+        BlockGeneratorData.GetInstnace.Restart();
+        RoundData.GetInstnace.UpdateRoundState();
         BlockGenerator.GetInstance.ResetArea();
     }
 }

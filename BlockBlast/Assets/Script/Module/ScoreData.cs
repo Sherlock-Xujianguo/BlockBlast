@@ -33,7 +33,13 @@ public class ScoreData : FishSingleton<ScoreData>, IInitable
     {
         PlayerMaxScore = PlayerPrefs.GetInt("PlayerMaxScore", 0);
         PlayerWeekMaxScore = PlayerPrefs.GetInt("PlayerWeekMaxScore", 0);
-        
+        PlayerMaxScoreTimeStamp = PlayerPrefs.GetInt("PlayerMaxScoreTimeStamp", 0);
+        PlayerWeekMaxScoreTimeStamp = PlayerPrefs.GetInt("PlayerWeekMaxScoreTimeStamp", 0);
+
+        if (FishTimeUtil.GetDay()/7 - PlayerWeekMaxScoreTimeStamp/7 > 1)
+        {
+            PlayerWeekMaxScore = 0;
+        }
 
         RegisterMessage<OnPlaceBlockMessageData>(FishMessageDefine.OnPlaceBlock, OnPlaceBlock);
         RegisterMessage<OnScoreUpdateMessageData>(FishMessageDefine.OnScoreUpdate, OnScoreUpdate);
@@ -56,6 +62,26 @@ public class ScoreData : FishSingleton<ScoreData>, IInitable
         onScoreUpdateData.old_score = CurrentCheckerBoardScore;
         onScoreUpdateData.new_score = CurrentCheckerBoardScore;
         SendMessage(FishMessageDefine.OnScoreUpdate, onScoreUpdateData);
+    }
+
+    public int GetPlayerMaxScore()
+    {
+        return PlayerMaxScore;
+    }
+
+    public int GetPlayerWeekMaxScore()
+    {
+        return PlayerWeekMaxScore;
+    }
+
+    public int GetPlayerCurrentScore()
+    {
+        return CurrentCheckerBoardScore;
+    }
+
+    public int GetComboCount()
+    {
+        return ComboCount;
     }
 
     void OnPlaceBlock(OnPlaceBlockMessageData PlaceData)
@@ -123,7 +149,17 @@ public class ScoreData : FishSingleton<ScoreData>, IInitable
         if (CurrentCheckerBoardScore > PlayerMaxScore)
         {
             PlayerMaxScore = CurrentCheckerBoardScore;
+            PlayerMaxScoreTimeStamp = FishTimeUtil.GetDay();
             PlayerPrefs.SetInt("PlayerMaxScore", PlayerMaxScore);
+            PlayerPrefs.SetInt("PlayerMaxScoreTimeStamp", PlayerMaxScoreTimeStamp);
+        }
+
+        if (CurrentCheckerBoardScore > PlayerWeekMaxScore)
+        {
+            PlayerWeekMaxScore = CurrentCheckerBoardScore;
+            PlayerWeekMaxScoreTimeStamp = FishTimeUtil.GetDay();
+            PlayerPrefs.SetInt("PlayerWeekMaxScore", PlayerWeekMaxScore);
+            PlayerPrefs.SetInt("PlayerWeekMaxScoreTimeStamp", PlayerWeekMaxScoreTimeStamp);
         }
     }
 

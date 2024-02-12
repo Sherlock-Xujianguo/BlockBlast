@@ -20,9 +20,7 @@ public class CheckerBoardData : FishSingleton<CheckerBoardData>, IInitable
             BoardValue[i] = new short[CheckBoardSize];
         }
 
-        RegisterMessage<FinishPlaceBlockMessageData>(FishMessageDefine.FinishPlaceBlock, OnFinishPlaceBlock);
     }
-
 
     public void SetBoardReady(int i, int j)
     {
@@ -178,7 +176,7 @@ public class CheckerBoardData : FishSingleton<CheckerBoardData>, IInitable
     }
 
 
-    public void OnFinishPlaceBlock(FinishPlaceBlockMessageData finishPlaceBlockMessageData)
+    public void OnFinishPlaceBlock()
     {
         CurrentBlockOnBoardCount = 0;
         for (int i = 0; i < CheckBoardSize; i++)

@@ -1,18 +1,20 @@
 
 using UnityEngine;
 
-enum GeneratorState
-{
-    RandomRound = 0,
-    EasyRound = 1,
-    EasyRoundPlus = 2,
-    HardRound = 3,
-    HardRoundPlus = 4,
-}
 
-public class BlockGeneratorData : FishSingleton<BlockGeneratorData>
+public class BlockGeneratorData : FishSingleton<BlockGeneratorData>, IInitable
 {
-    public BlockGeneratorData() { }
+    public int GenerateStep = 0;
+
+    public void Init()
+    {
+        Restart();
+    }
+
+    public void Restart()
+    {
+        GenerateStep = 0;
+    }
 
     public short[][][] GetBlockCompRandom()
     {
@@ -39,6 +41,8 @@ public class BlockGeneratorData : FishSingleton<BlockGeneratorData>
         {
             rst[i] = BlockShapesConfig.ShapeList[indexArray[i]];
         }
+
+        GenerateStep++;
         return rst;
     }
 }
