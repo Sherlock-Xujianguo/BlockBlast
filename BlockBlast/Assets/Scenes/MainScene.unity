@@ -324,7 +324,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentDragBlock: {fileID: 0}
-  Debug: 0
+  Debug: 1
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

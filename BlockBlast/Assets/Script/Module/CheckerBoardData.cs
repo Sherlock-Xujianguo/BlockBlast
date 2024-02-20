@@ -63,6 +63,19 @@ public class CheckerBoardData : FishSingleton<CheckerBoardData>, IInitable
         BoardValue[i][j] = 0;
     }
 
+    public void ClearReadyValue()
+    {
+        for (int i = 0; i < CheckBoardSize; i++)
+        {
+            for (int j = 0; j < CheckBoardSize; j++)
+            {
+                if (IsBoardReady(i, j))
+                {
+                    ClearBoardValue(i, j);
+                }
+            }
+        }
+    }
 
     public void GetGoalRowAndColumn(out List<int> i_GoalIndex, out List<int> j_GoalIndex)
     {
@@ -173,6 +186,118 @@ public class CheckerBoardData : FishSingleton<CheckerBoardData>, IInitable
 
 
         return false;
+    }
+
+    public void BlockPlaceValue(BlockData blockData, out bool CanPlace, out int MaxBurst, out int MinEdge)
+    {
+        CanPlace = false;
+        MaxBurst = 0;
+        MinEdge = 100;
+
+        for (int i = 0; i < CheckBoardSize; i++)
+        {
+            for (int j = 0; j < CheckBoardSize; j++)
+            {
+                if (!IsBoardClear(i, j))
+                {
+                    continue;
+                }
+
+                int EdgeBuff = 0;
+                int offsetIndex = 0;
+                for (offsetIndex = 0; offsetIndex < blockData.Size; offsetIndex++)
+                {
+                    int[] offset = blockData.Offset[offsetIndex];
+                    if (i + offset[0] >= CheckBoardSize || i + offset[0] < 0 ||
+                        j + offset[1] >= CheckBoardSize || j + offset[1] < 0 ||
+                        !IsBoardClear(i + offset[0], j + offset[1]))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        SetBoardReady(i, j);
+
+                        int CheckEdgeTempi = i + offset[0] - 1;
+                        int CheckEdgeTempj = j + offset[1];
+                        // 首先确保检查位置在棋盘范围内，如果检查位置出界，对边数无影响
+                        if (CheckEdgeTempi < CheckBoardSize && CheckEdgeTempi >= 0)
+                        {
+                            // 如果检查位置有占位，边数-1;检查位置为空，边数+1
+                            if (IsBoardPlaced(CheckEdgeTempi, CheckEdgeTempj) || IsBoardReady(CheckEdgeTempi, CheckEdgeTempj))
+                            {
+                                EdgeBuff--;
+                            }
+                            else if (IsBoardClear(CheckEdgeTempi, CheckEdgeTempj))
+                            {
+                                EdgeBuff++;
+                            }
+                        }
+
+                        CheckEdgeTempi = i + offset[0] + 1;
+                        if (CheckEdgeTempi < CheckBoardSize && CheckEdgeTempi >= 0)
+                        {
+                            if (IsBoardPlaced(CheckEdgeTempi, CheckEdgeTempj) || IsBoardReady(CheckEdgeTempi, CheckEdgeTempj))
+                            {
+                                EdgeBuff--;
+                            }
+                            else if (IsBoardClear(CheckEdgeTempi, CheckEdgeTempj))
+                            {
+                                EdgeBuff++;
+                            }
+                        }
+
+                        CheckEdgeTempi = i + offset[0];
+                        CheckEdgeTempj = j + offset[1] - 1;
+                        if (CheckEdgeTempj < CheckBoardSize && CheckEdgeTempj >= 0)
+                        {
+                            if (IsBoardPlaced(CheckEdgeTempi, CheckEdgeTempj) || IsBoardReady(CheckEdgeTempi, CheckEdgeTempj))
+                            {
+                                EdgeBuff--;
+                            }
+                            else if (IsBoardClear(CheckEdgeTempi, CheckEdgeTempj))
+                            {
+                                EdgeBuff++;
+                            }
+                        }
+
+                        CheckEdgeTempj = j + offset[1] + 1;
+                        if (CheckEdgeTempj < CheckBoardSize && CheckEdgeTempj >= 0)
+                        {
+                            if (IsBoardPlaced(CheckEdgeTempi, CheckEdgeTempj) || IsBoardReady(CheckEdgeTempi, CheckEdgeTempj))
+                            {
+                                EdgeBuff--;
+                            }
+                            else if (IsBoardClear(CheckEdgeTempi, CheckEdgeTempj))
+                            {
+                                EdgeBuff++;
+                            }
+                        }
+                    }
+                }
+
+                List<int> CheckReadyi;
+                List<int> CheckReadyj;
+                GetReadyRowAndColumn(out CheckReadyi, out CheckReadyj);
+
+                if (offsetIndex == blockData.Size)
+                {
+                    CanPlace = true;
+
+                    if (EdgeBuff < MinEdge)
+                    {
+                        MinEdge = EdgeBuff;
+                    }
+
+                    if (CheckReadyi.Count + CheckReadyj.Count > MaxBurst)
+                    {
+                        MaxBurst = CheckReadyi.Count + CheckReadyj.Count;
+                    }
+                }
+
+                ClearReadyValue();
+            }
+        }
     }
 
 

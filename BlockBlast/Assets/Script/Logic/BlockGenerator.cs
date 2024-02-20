@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class BlockGenerator : FishMonoSingleton<BlockGenerator>
 {
-    BlockGeneratorData GeneratorData = new BlockGeneratorData();
     BaseBlockComp BaseBlockCompClass;
 
     BaseBlockComp BlockComp_1;
@@ -77,35 +76,34 @@ public class BlockGenerator : FishMonoSingleton<BlockGenerator>
             }
         }
 
-        short[][][] blocks = GeneratorData.GetBlockCompRandom();
-        BlockData blockData = new BlockData();
-        blockData.Initialize(blocks[0]);
+        BlockData[] blockDatas = BlockGeneratorData.GetInstnace.GetBlockCompRandom();
+
+        if (state == RoundData.RoundState.EasyRound)
+        {
+            blockDatas = BlockGeneratorData.GetInstnace.GetBlockEasyRound();
+        }
+        if (state == RoundData.RoundState.EasyRoundPlus)
+        {
+            blockDatas = BlockGeneratorData.GetInstnace.GetBlockEasyRoundPlus();
+        }
 
         BlockComp_1 = Instantiate(BaseBlockCompClass).GetComponent<BaseBlockComp>();
         BlockComp_1.gameObject.SetActive(true);
         BlockComp_1.transform.SetParent(transform, false);
         BlockComp_1.transform.position = Pos_1.position;
-        BlockComp_1.SetupBlock(blockData, ColorIndex++);
-
-        blocks = GeneratorData.GetBlockCompRandom();
-        blockData = new BlockData();
-        blockData.Initialize(blocks[1]);
+        BlockComp_1.SetupBlock(blockDatas[0], ColorIndex++);
 
         BlockComp_2 = Instantiate(BaseBlockCompClass).GetComponent<BaseBlockComp>();
         BlockComp_2.gameObject.SetActive(true);
         BlockComp_2.transform.SetParent(transform, false);
         BlockComp_2.transform.position = Pos_2.position;
-        BlockComp_2.SetupBlock(blockData, ColorIndex++);
-
-        blocks = GeneratorData.GetBlockCompRandom();
-        blockData = new BlockData();
-        blockData.Initialize(blocks[2]);
+        BlockComp_2.SetupBlock(blockDatas[1], ColorIndex++);
 
         BlockComp_3 = Instantiate(BaseBlockCompClass).GetComponent<BaseBlockComp>();
         BlockComp_3.gameObject.SetActive(true);
         BlockComp_3.transform.SetParent(transform, false);
         BlockComp_3.transform.position = Pos_3.position;
-        BlockComp_3.SetupBlock(blockData, ColorIndex++);
+        BlockComp_3.SetupBlock(blockDatas[2], ColorIndex++);
 
         ValidBlockCount = 3;
     }

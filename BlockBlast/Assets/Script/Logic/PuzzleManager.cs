@@ -31,7 +31,10 @@ public class PuzzleManager : FishMonoSingleton<PuzzleManager>
 
         RegisterMessage<OnDragBlockMessageData>(FishMessageDefine.OnDragBlock, OnDragBlock);
 
-        Restart();
+        ScoreData.GetInstnace.Restart();
+        BlockGeneratorData.GetInstnace.Restart();
+        RoundData.GetInstnace.UpdateRoundState();
+        BlockGenerator.GetInstance.ResetArea();
     }
 
     private void OnDestroy()
